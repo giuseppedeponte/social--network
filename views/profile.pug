@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  .col-sm-8.col-sm-offset-2
+    .text-center
+      h1
+        span.fa.fa-user
+        | &nbsp;Profile
+      br
+      span
+        strong user id: #{user ? user._id : ''}
+        br
+        a(href="/") 
+          span.fa.fa-sign-out
+          | &nbsp;Sign out
+        hr
+        .jumbotron
+          if (user && user.local.email != null)
+            img.img-circle(src="https://avatars.io/gravatar/" + user.local.email)
+            br
+            strong email: #{user.local.email}
+            br

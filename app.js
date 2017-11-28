@@ -12,10 +12,10 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
 
-// const configDB = require('./config/database');
-// mongoose.connect(configDB.url);
+const configDB = require('./config/database');
+mongoose.connect(configDB.url);
 
-// require('./config/passport')(passport);
+require('./config/passport')(passport);
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -41,7 +41,11 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({ secret: 'secretsecretivegotasecret' }));
+app.use(session({
+  secret: 'secretsecretivegotasecret',
+  resave: false,
+  saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());

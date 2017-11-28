@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .col-sm-8.col-sm-offset-2
+      .jumbotron.text-center
+        .h1
+          span.fa.fa-sign-in
+          | &nbsp;Signup
+
+        if (message != null)
+          .alert-danger= message
+
+        form(action="/users/signup" method="post")
+          .form-group
+            label Email
+            input(type="text" class="form-control" name="email")
+          .form-group
+            label Password
+            input(type="password" class="form-control" name="password")
+          div
+            input(type="submit" class="form-control" value="Submit")
+      hr
+      span.fa.fa-sign-in 
+        | &nbsp;Already have an account?
+        a(href="/users/login") &nbsp;Login
+      p Or go 
+        a(href="/") home

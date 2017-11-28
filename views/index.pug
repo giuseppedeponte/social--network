@@ -1,5 +1,13 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .col-sm-8.col-sm-offset-2
+      .jumbotron.text-center
+        h1= title
+        p.lead Welcome to #{title}
+        a.btn.btn-default(href="/users/login")
+          span.fa.fa-sign-in
+          | &nbsp;Login
+        a.btn.btn-default(href="/users/signup")
+          span.fa.fa-user
+          | &nbsp;Signup
