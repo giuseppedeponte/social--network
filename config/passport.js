@@ -19,24 +19,24 @@ passport.use('local-signup',new LocalStrategy({
   passwordField: 'password',
   passReqToCallback: true
 }, (req, email, password, done) => {
-  process.nextTick(() => {
-    User.findOne({'local.email': email}, (err, user) => {
+  User.findOne({'email': email})
+  .then((user) => {
+    if (user) {
+      return done(null, false, req.flash('signupMessage', 'Un utilisateur avec cet adresse email existe déjà.'));
+    }
+    let newUser = new User();
+    newUser.email = email;
+    newUser.password = newUser.generateHash(password);
+    newUser.save((err) => {
       if (err) {
-        return done(err);
+        console.log(err);
+        throw err;
       }
-      if (user) {
-        return done(null, false, req.flash('signupMessage', 'Un utilisateur avec cet adresse email existe déjà.'));
-      }
-      let newUser = new User();
-      newUser.local.email = email;
-      newUser.local.password = newUser.generateHash(password);
-      newUser.save((err) => {
-        if (err) {
-          throw err;
-        }
-        return done(null, newUser);
-      });
+      return done(null, newUser);
     });
+  })
+  .catch((err) => {
+    return done(err);
   });
 }));
 passport.use('local-login',new LocalStrategy({
@@ -44,10 +44,8 @@ passport.use('local-login',new LocalStrategy({
   passwordField: 'password',
   passReqToCallback: true
 }, (req, email, password, done) => {
-  User.findOne({'local.email': email}, (err, user) => {
-    if (err) {
-      return done(err);
-    }
+  User.findOne({'email': email})
+  .then((user) => {
     if (!user) {
       return done(null, false, req.flash('loginMessage', 'Aucun utilisateur existe avec cet adresse email'));
     }
@@ -55,5 +53,9 @@ passport.use('local-login',new LocalStrategy({
       return done(null, false, req.flash('loginMessage', 'Mot de passe incorrect.'));
     }
     return done(null, user);
+  })
+  .catch((err) => {
+    console.log(err);
+    return done(err);
   });
 }));

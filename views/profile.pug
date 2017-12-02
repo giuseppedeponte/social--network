@@ -10,13 +10,13 @@ block content
       span
         strong user id: #{user ? user._id : ''}
         br
-        a(href="/") 
+        a(href="/user/logout") 
           span.fa.fa-sign-out
           | &nbsp;Sign out
         hr
         .jumbotron
-          if (user && user.local.email != null)
-            img.img-circle(src="https://avatars.io/gravatar/" + user.local.email)
+          if (user && user.email != null)
+            img.img-circle(src="https://avatars.io/gravatar/" + user.email)
             br
-            strong email: #{user.local.email}
+            strong email: #{user.email}
             br

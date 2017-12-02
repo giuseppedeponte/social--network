@@ -4,10 +4,21 @@ block content
   .col-sm-8.col-sm-offset-2
       .jumbotron.text-center
         h1= title
+        if (message != null)
+          .alert-info= message
         p.lead Welcome to #{title}
-        a.btn.btn-default(href="/users/login")
-          span.fa.fa-sign-in
-          | &nbsp;Login
-        a.btn.btn-default(href="/users/signup")
-          span.fa.fa-user
-          | &nbsp;Signup
+        if (user)
+          a.btn.btn-default(href="/user/")
+            span.fa.fa-user
+            | &nbsp;Profile
+          a.btn.btn-default(href="/user/logout")
+            span.fa.fa-sign-out
+            | &nbsp;Logout
+        if (!user)
+          a.btn.btn-default(href="/user/login")
+            span.fa.fa-sign-in
+            | &nbsp;Login
+          a.btn.btn-default(href="/user/signup")
+            span.fa.fa-user
+            | &nbsp;Signup
+        

@@ -1,0 +1,3 @@
+@echo off
+echo Starting MongoDB daemon...
+START "runas /user:administrator" cmd /K "cd C:\Program Files\MongoDB\Server\3.4\bin & mongod.exe --dbpath .\data"

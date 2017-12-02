@@ -8,17 +8,20 @@ const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
 
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
 
 const configDB = require('./config/database');
-mongoose.connect(configDB.url);
+mongoose.connect(configDB.url, configDB.options).then((db) => {
+  console.log('Database connected');
+});
 
 require('./config/passport')(passport);
 
 const index = require('./routes/index');
-const users = require('./routes/users');
+const user = require('./routes/user');
 
 const app = express();
 
@@ -51,7 +54,7 @@ app.use(passport.session());
 app.use(flash());
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/user', user);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

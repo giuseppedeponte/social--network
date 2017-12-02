@@ -10,7 +10,7 @@ block content
         if (message != null)
           .alert-danger= message
 
-        form(action="/users/login" method="post")
+        form(action="/user/login" method="post")
           .form-group
             label Email
             input(type="text" class="form-control" name="email")
@@ -22,6 +22,6 @@ block content
       hr
       span.fa.fa-sign-in 
         | &nbsp;Don't have an account?
-        a(href="/users/signup") &nbsp;Signup
+        a(href="/user/signup") &nbsp;Signup
       p Or go 
         a(href="/") home
