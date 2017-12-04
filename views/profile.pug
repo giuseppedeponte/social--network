@@ -1,22 +1,33 @@
 extends layout
 
 block content
-  .col-sm-8.col-sm-offset-2
-    .text-center
-      h1
-        span.fa.fa-user
-        | &nbsp;Profile
-      br
-      span
-        strong user id: #{user ? user._id : ''}
-        br
-        a(href="/user/logout") 
-          span.fa.fa-sign-out
-          | &nbsp;Sign out
-        hr
-        .jumbotron
-          if (user && user.email != null)
-            img.img-circle(src="https://avatars.io/gravatar/" + user.email)
-            br
-            strong email: #{user.email}
-            br
+  div.row
+    .col-sm-12.col-md-6
+      .card.mx-auto
+        img.card-img-top.img-fluid(src="https://avatars.io/gravatar/"+user.email alt="Card image cap")
+        ul.list-group.list-group-flush.text-left
+          li.list-group-item
+            span.fa.fa-fw.fa-male
+            | &ensp;#{user.name || user.email}
+          li.list-group-item
+            span.fa.fa-fw.fa-envelope
+            | &ensp;#{user.email}
+          li.list-group-item
+            span.fa.fa-fw.fa-map
+            | &ensp;
+          li.list-group-item
+            span.fa.fa-fw.fa-hashtag
+            | &ensp;#{user.id}
+    .col-sm-12.col-md-6
+      .card.mx-auto.my-xs-2
+        .card-body
+          h4.card-title Profile
+        ul.list-group.list-group-flush.text-left
+          li.list-group-item
+            | Some quick example text to build on the card title and make up the bulk of the card's content.
+            | Some quick example text to build on the card title and make up the bulk of the card's content.
+            | Some quick example text to build on the card title and make up the bulk of the card's content.
+            | Some quick example text to build on the card title and make up the bulk of the card's content.
+            | Some quick example text to build on the card title and make up the bulk of the card's content.
+          li.list-group-item
+            a.btn.btn-primary(href="#") Go somewhere        

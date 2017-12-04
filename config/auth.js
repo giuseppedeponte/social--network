@@ -22,26 +22,32 @@ module.exports.loggedIn = (req, res, next) => {
   res.redirect('/user/login');
 };
 module.exports.owner = (req, res, next) => {
-  updateReq(req);
-  if(req.isOwner) {
-    return next();
-  }
-  req.flash('indexMessage', 'Vous n\'avez pas le droit de modifier cette page');
-  res.redirect('/');
+  this.loggedIn(req, res, () => {
+    updateReq(req);
+    if(req.isAdmin || req.isOwner) {
+      return next();
+    }
+    req.flash('message', 'Vous n\'avez pas le droit de modifier cette page');
+    res.redirect('/');
+  });
 };
 module.exports.friend = (req, res, next) => {
-  updateReq(req);
-  if (req.isFriend || req.isOwner) {
-    return next();
-  }
-  req.flash('indexMessage', 'Vous n\'avez pas le droit de modifier cette page');
-  res.redirect('/');
+  this.loggedIn(req, res, () => {
+    updateReq(req);
+    if (req.isAdmin || req.isFriend || req.isOwner) {
+      return next();
+    }
+    req.flash('message', 'Vous n\'avez pas le droit de modifier cette page');
+    res.redirect('/');
+  });
 };
 module.exports.admin = (req, res, next) => {
-  updateReq(req);
-  if (req.isAdmin) {
-    return next();
-  }
-  req.flash('indexMessage', 'Vous n\'avez pas le droit de modifier cette page');
-  res.redirect('/');
+  this.loggedIn(req, res, () => {
+    updateReq(req);
+    if (req.isAdmin) {
+      return next();
+    }
+    req.flash('message', 'Vous n\'avez pas le droit de modifier cette page');
+    res.redirect('/');
+  });
 };

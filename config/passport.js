@@ -19,6 +19,14 @@ passport.use('local-signup',new LocalStrategy({
   passwordField: 'password',
   passReqToCallback: true
 }, (req, email, password, done) => {
+  email = email.trim().toLowerCase();
+  password = password.trim();
+  req.body.passwordRepeat = req.body.passwordRepeat.trim();
+  if (email === '' || password === '' || req.body.passwordRepeat === '') {
+    return done(null, false, req.flash('signupMessage', 'Merci de remplir tous les champs du formulaire.'));
+  } else if (password !== req.body.passwordRepeat) {
+    return done(null, false, req.flash('signupMessage', 'Les deux mots de passe ne correspondent pas.'));
+  }
   User.findOne({'email': email})
   .then((user) => {
     if (user) {
@@ -44,6 +52,10 @@ passport.use('local-login',new LocalStrategy({
   passwordField: 'password',
   passReqToCallback: true
 }, (req, email, password, done) => {
+  email = email.toLowerCase();
+  if (email === '' || password === '') {
+    return done(null, false, req.flash('loginMessage', 'Merci de remplir tous les champs du formulaire.'));
+  }
   User.findOne({'email': email})
   .then((user) => {
     if (!user) {

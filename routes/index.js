@@ -6,9 +6,9 @@ const router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', {
-    title: 'Express',
+    title: 'Social Network',
     user: req.user || null,
-    message: req.flash('indexMessage')
+    flashMessage: req.flash('indexMessage')
   });
 });
 

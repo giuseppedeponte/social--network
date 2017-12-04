@@ -1,27 +1,31 @@
 extends layout
 
 block content
-  .col-sm-8.col-sm-offset-2
-      .jumbotron.text-center
-        .h1
-          span.fa.fa-sign-in
-          | &nbsp;Login
-
-        if (message != null)
-          .alert-danger= message
-
-        form(action="/user/login" method="post")
-          .form-group
-            label Email
-            input(type="text" class="form-control" name="email")
-          .form-group
-            label Password
-            input(type="password" class="form-control" name="password")
-          div
-            input(type="submit" class="form-control" value="Submit")
+  div.text-center.row
+    .col-sm-12
+      h1= title
+      if (message.length)
+        .alert.alert-warning(role="alert")
+          strong= message
       hr
-      span.fa.fa-sign-in 
-        | &nbsp;Don't have an account?
-        a(href="/user/signup") &nbsp;Signup
-      p Or go 
-        a(href="/") home
+    .col-sm-12
+      form(method="POST" action="/user/login")
+        .form-group.text-left
+          label(for="email") Email *
+          input#email.form-control(type="email"
+                                   name="email"
+                                   placeholder="Adresse email"
+                                   required
+                                   autofocus)
+        .form-group.text-left
+          label(for="password") Mot de passe *
+          input#password.form-control(type="password"
+                                      name="password"
+                                      placeholder="Mot de passe"
+                                      required)
+        input.btn.btn-lg.btn-block.btn-dark(type="submit" value="Se connecter")
+        .btn-group-vertical.btn-group-sm.mt-2
+          a.btn.btn-block(href="/user/signup")
+            | Pas encore inscrits ? 
+          a.btn.btn-block(href="/")
+            | Mot de passe oublié ?

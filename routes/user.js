@@ -9,13 +9,13 @@ router.get('/', auth.loggedIn, (req, res, next) => {
 });
 router.get('/login', (req, res, next) => {
   res.render('login', {
-    title: 'Login',
+    title: 'Connexion',
     message: req.flash('loginMessage')
   });
 });
 router.get('/signup', (req, res, next) => {
   res.render('signup', {
-    title: 'Signup',
+    title: 'Inscription',
     message: req.flash('signupMessage')
   });
 });

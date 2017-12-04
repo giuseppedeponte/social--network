@@ -1,24 +1,32 @@
 extends layout
 
 block content
-  .col-sm-8.col-sm-offset-2
-      .jumbotron.text-center
-        h1= title
-        if (message != null)
-          .alert-info= message
-        p.lead Welcome to #{title}
+  div.row
+    .col-sm-12
+      h1= title
+      if (flashMessage.length)
+        .alert.alert-warning(role="alert")
+          strong= flashMessage
+      hr
+    .col-sm-12
+      .btn-group.btn-group-lg.btn-group-vertical
         if (user)
-          a.btn.btn-default(href="/user/")
-            span.fa.fa-user
+          a.btn.btn-light(href="/user/")
+            span.fa.fa-fw.fa-user
             | &nbsp;Profile
-          a.btn.btn-default(href="/user/logout")
-            span.fa.fa-sign-out
+          a.btn.btn-danger(href="/user/logout")
+            span.fa.fa-fw.fa-sign-out
             | &nbsp;Logout
         if (!user)
-          a.btn.btn-default(href="/user/login")
-            span.fa.fa-sign-in
-            | &nbsp;Login
-          a.btn.btn-default(href="/user/signup")
-            span.fa.fa-user
-            | &nbsp;Signup
-        
+          a.btn.btn-light(href="/user/login")
+            span.fa.fa-fw.fa-sign-in
+            | &nbsp;Connexion
+          a.btn.btn-warning(href="/user/signup")
+            span.fa.fa-fw.fa-handshake-o
+            | &nbsp;Inscription
+    .col-sm-12
+      hr
+      a.btn(href="/user/signup")
+        span.fa.fa-question-circle
+        | &nbsp;À propos
+            
