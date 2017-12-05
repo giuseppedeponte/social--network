@@ -36,9 +36,12 @@ router.post('/login', passport.authenticate('local-login', {
 }));
 router.get('/:userId', auth.friend, (req, res, next) => {
   if (req.isOwner) {
-    res.render('profile', {
+    res.render('editProfile', {
       title: 'Profile',
-      user: req.user
+      user: req.user,
+      isOwner: req.isOwner,
+      isFriend: req.isFriend,
+      isAdmin: req.isAdmin
     });
   } else {
     User.findOne({'_id': req.params.userId})
@@ -46,9 +49,13 @@ router.get('/:userId', auth.friend, (req, res, next) => {
       if (!user) {
         throw new Error('Not Found');
       }
-      res.render('profile', {
+      let view = req.isAdmin ? 'editProfile' : 'profile';
+      res.render(view, {
         title: 'Profile',
-        user: user
+        user: user,
+        isOwner: req.isOwner,
+        isFriend: req.isFriend,
+        isAdmin: req.isAdmin
       });
     })
     .catch((e) => {

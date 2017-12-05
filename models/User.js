@@ -24,8 +24,7 @@ const userSchema = Schema({
     lastName: String,
     gender: String,
     address: {
-      streetNumber: String,
-      streetName: String,
+      street: String,
       zipCode: String,
       city: String,
       state: String

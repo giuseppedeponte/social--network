@@ -1,0 +1,113 @@
+extends layout
+
+block content
+  .row
+    .col-sm-12.col-md-6
+      form.card.mx-auto(method="POST" action="user/edit/" + user._id)
+        img.card-img-top.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/"+user.email alt="Card image cap")
+        ul.list-group.list-group-flush.text-left
+          li.list-group-item
+            label.sr-only(for="name") Username
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-male
+              input.form-control.form-control-sm(type="text" 
+                                 name="name"
+                                 id="name"
+                                 value=user.name
+                                 placeholder="Pseudonyme")
+          if (user.role === 'admin')
+            li.list-group-item
+              label.sr-only(for="role") Role
+              .input-group.mb-2.mb-sm-0
+                .input-group-addon
+                  span.fa.fa-fw.fa-user-secret
+                input.form-control.form-control-sm(type="text" 
+                                   name="role"
+                                   id="role"
+                                   value=user.role
+                                   placeholder="Rôle")
+          li.list-group-item
+            label.sr-only(for="email") Email
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-envelope
+              input.form-control.form-control-sm(type="email"
+                                 name="email"
+                                 id="email"
+                                 value=user.email
+                                 placeholder="Adresse email")
+          li.list-group-item
+            label.sr-only(for="fullname") FullName
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-address-card
+              input.form-control.form-control-sm(type="text"
+                                 name="firstName" 
+                                 id="firstName"
+                                 value=user.info.firstName
+                                 placeholder="Prénom")
+              input.form-control.form-control-sm(type="text"
+                                 name="lastName"
+                                 id="lastName"
+                                 value=user.info.lastName
+                                 placeholder="Nom")
+          li.list-group-item
+            label.sr-only(for="gender") FullName
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-venus-mars
+              input.form-control.form-control-sm(type="text"
+                                 name="gender" 
+                                 id="gender"
+                                 value=user.info.gender
+                                 placeholder="Genre")
+          li.list-group-item
+            label.sr-only(for="address") Adresse
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-map
+              input.form-control.form-control-sm(type="text"
+                                 name="street" 
+                                 id="street"
+                                 value=user.info.address.street
+                                 placeholder="Adresse")
+            .input-group.mb-2.mb-sm-0
+              input.form-control.form-control-sm.mt-1(type="text"
+                                 name="zipcode" 
+                                 id="zipcode"
+                                 value=user.info.address.zipCode
+                                 placeholder="Code Postale")
+              input.form-control.form-control-sm.mt-1(type="text"
+                                 name="city" 
+                                 id="city"
+                                 value=user.info.address.city
+                                 placeholder="Commune")
+            .input-group.mb-2.mb-sm-0
+              input.form-control.form-control-sm.mt-1(type="text"
+                                 name="state" 
+                                 id="state"
+                                 value=user.info.address.state
+                                 placeholder="Pays")
+          li.list-group-item
+            label.sr-only(for="bio") Présentation
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-child
+              textarea.form-control.form-control-sm(name="bio" 
+                                    id="bio"
+                                    value=user.profile.bio
+                                    placeholder="Présentation")
+          li.list-group-item
+            label.sr-only(for="bio") Préférences
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-star
+              textarea.form-control.form-control-sm(name="preferences" 
+                                 id="preferences"
+                                 value=user.profile.preferences
+                                 placeholder="Préférences")
+    .col-sm-12.col-md-6
+      include ./friendList.pug
+    .col-sm-12
+      include ./profileWall.pug

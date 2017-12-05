@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
   res.render('index', {
     title: 'Social Network',
     user: req.user || null,
-    flashMessage: req.flash('indexMessage')
+    flashMessage: req.flash('flashMessage')
   });
 });
 

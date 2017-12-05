@@ -27,7 +27,7 @@ module.exports.owner = (req, res, next) => {
     if(req.isAdmin || req.isOwner) {
       return next();
     }
-    req.flash('message', 'Vous n\'avez pas le droit de modifier cette page');
+    req.flash('flashMessage', 'Vous n\'avez pas le droit d\'accèder à cette page');
     res.redirect('/');
   });
 };
@@ -37,7 +37,7 @@ module.exports.friend = (req, res, next) => {
     if (req.isAdmin || req.isFriend || req.isOwner) {
       return next();
     }
-    req.flash('message', 'Vous n\'avez pas le droit de modifier cette page');
+    req.flash('flashMessage', 'Vous n\'avez pas le droit d\'accèder à cette page');
     res.redirect('/');
   });
 };
@@ -47,7 +47,7 @@ module.exports.admin = (req, res, next) => {
     if (req.isAdmin) {
       return next();
     }
-    req.flash('message', 'Vous n\'avez pas le droit de modifier cette page');
+    req.flash('flashMessage', 'Vous n\'avez pas le droit d\'accèder à cette page');
     res.redirect('/');
   });
 };

@@ -1,6 +1,10 @@
+body,
+input,
+textarea {
+  font: 14px Quicksand, Helvetica, Arial, sans-serif; }
+
 body {
   box-sizing: border-box;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   width: 100vw;
   height: 100vh;
   padding-top: 20px; }

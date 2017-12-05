@@ -1,25 +1,43 @@
 extends layout
-
+  
 block content
   div.row
     .col-sm-12.col-md-6
       .card.mx-auto
-        img.card-img-top.img-fluid(src="https://avatars.io/gravatar/"+user.email alt="Card image cap")
+        img.card-img-top.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/" + user.email alt="Card image cap")
         ul.list-group.list-group-flush.text-left
           li.list-group-item
+            span.fa.fa-fw.fa-hashtag
+            | &ensp;#{user.id}
+          li.list-group-item.d-flex.justify-content-start.align-items-center
             span.fa.fa-fw.fa-male
-            | &ensp;#{user.name || user.email}
+            | &ensp;#{user.name}&ensp;
+            if (user.role === 'admin')
+              span.badge.badge-dark admin
           li.list-group-item
             span.fa.fa-fw.fa-envelope
             | &ensp;#{user.email}
           li.list-group-item
-            span.fa.fa-fw.fa-map
-            | &ensp;
+            span.fa.fa-fw.fa-venus-mars
+            | &ensp;#{user.info.gender}
           li.list-group-item
-            span.fa.fa-fw.fa-hashtag
-            | &ensp;#{user.id}
+            span.fa.fa-fw.fa-address-card
+            | &ensp;#{user.info.firstName} #{user.info.lastName}
+          li.list-group-item
+            span.fa.fa-fw.fa-map
+            | &ensp;#{user.info.address.street} 
+            br
+            | #{user.info.address.zipCode} #{user.info.address.city}
+            br
+            | #{user.info.address.state }
+          li.list-group-item
+            span.fa.fa-fw.fa-child
+            | &ensp;#{user.profile.bio}
+          li.list-group-item
+            span.fa.fa-fw.fa-star
+            | &ensp;#{user.profile.preferences}
     .col-sm-12.col-md-6
-      .card.mx-auto.my-xs-2
+      .card.mx-auto.my-2
         .card-body
           h4.card-title Profile
         ul.list-group.list-group-flush.text-left
@@ -31,3 +49,7 @@ block content
             | Some quick example text to build on the card title and make up the bulk of the card's content.
           li.list-group-item
             a.btn.btn-primary(href="#") Go somewhere        
+    .col-sm-12.col-md-6
+      include ./friendList.pug
+    .col-sm-12
+      include ./profileWall.pug
