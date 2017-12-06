@@ -3,9 +3,13 @@ extends layout
 block content
   .row
     .col-sm-12.col-md-6
-      form.card.mx-auto(method="POST" action="user/edit/" + user._id)
+      form.card.mx-auto(method="POST" action="/user/update/" + user._id)
         img.card-img-top.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/"+user.email alt="Card image cap")
         ul.list-group.list-group-flush.text-left
+          li.list-group-item.d-flex.justify-content-between.align-items-center
+            span
+              i.fa.fa-fw.fa-hashtag
+              | &ensp;#{user.id}
           li.list-group-item
             label.sr-only(for="name") Username
             .input-group.mb-2.mb-sm-0
@@ -74,8 +78,8 @@ block content
                                  placeholder="Adresse")
             .input-group.mb-2.mb-sm-0
               input.form-control.form-control-sm.mt-1(type="text"
-                                 name="zipcode" 
-                                 id="zipcode"
+                                 name="zipCode" 
+                                 id="zipCode"
                                  value=user.info.address.zipCode
                                  placeholder="Code Postale")
               input.form-control.form-control-sm.mt-1(type="text"
@@ -96,8 +100,7 @@ block content
                 span.fa.fa-fw.fa-child
               textarea.form-control.form-control-sm(name="bio" 
                                     id="bio"
-                                    value=user.profile.bio
-                                    placeholder="Présentation")
+                                    placeholder="Présentation")= user.profile.bio
           li.list-group-item
             label.sr-only(for="bio") Préférences
             .input-group.mb-2.mb-sm-0
@@ -105,8 +108,14 @@ block content
                 span.fa.fa-fw.fa-star
               textarea.form-control.form-control-sm(name="preferences" 
                                  id="preferences"
-                                 value=user.profile.preferences
-                                 placeholder="Préférences")
+                                 placeholder="Préférences")= user.profile.preferences
+          li.list-group-item.text-center
+              button.btn.btn-block.btn-dark(type="submit")
+                span.fa.fa-fw.fa-save
+                | &nbsp;Valider les modifications
+              a.btn.btn-block.btn-danger(href="/user/delete/" + user.id)
+                span.fa.fa-fw.fa-trash
+                | &nbsp;Supprimer le compte
     .col-sm-12.col-md-6
       include ./friendList.pug
     .col-sm-12

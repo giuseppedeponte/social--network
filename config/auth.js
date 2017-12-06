@@ -14,15 +14,16 @@ const updateReq = (req) => {
   req.isAdmin = isAdmin(req.user);
   return;
 };
-module.exports.loggedIn = (req, res, next) => {
+const loggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
   req.flash('loginMessage', 'Vous devez vous connecter pour acceder à cette page');
   res.redirect('/user/login');
 };
+module.exports.loggedIn = loggedIn;
 module.exports.owner = (req, res, next) => {
-  this.loggedIn(req, res, () => {
+  loggedIn(req, res, () => {
     updateReq(req);
     if(req.isAdmin || req.isOwner) {
       return next();
@@ -32,7 +33,7 @@ module.exports.owner = (req, res, next) => {
   });
 };
 module.exports.friend = (req, res, next) => {
-  this.loggedIn(req, res, () => {
+  loggedIn(req, res, () => {
     updateReq(req);
     if (req.isAdmin || req.isFriend || req.isOwner) {
       return next();
@@ -42,7 +43,7 @@ module.exports.friend = (req, res, next) => {
   });
 };
 module.exports.admin = (req, res, next) => {
-  this.loggedIn(req, res, () => {
+  loggedIn(req, res, () => {
     updateReq(req);
     if (req.isAdmin) {
       return next();

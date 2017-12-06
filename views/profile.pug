@@ -2,54 +2,56 @@ extends layout
   
 block content
   div.row
-    .col-sm-12.col-md-6
+    .col-sm-12.col-md-7
       .card.mx-auto
         img.card-img-top.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/" + user.email alt="Card image cap")
         ul.list-group.list-group-flush.text-left
-          li.list-group-item
-            span.fa.fa-fw.fa-hashtag
-            | &ensp;#{user.id}
-          li.list-group-item.d-flex.justify-content-start.align-items-center
-            span.fa.fa-fw.fa-male
-            | &ensp;#{user.name}&ensp;
+          li.list-group-item.d-flex.justify-content-between.align-items-center
+            span
+              i.fa.fa-fw.fa-hashtag
+              | &ensp;#{user.id}
             if (user.role === 'admin')
-              span.badge.badge-dark admin
+              span.badge.badge-dark 
+                i.fa.fa-fw.fa-user-secret
+                | &nbsp;ADMIN
+          if (user.name)
+            li.list-group-item
+              span.fa.fa-fw.fa-male
+              | &ensp;#{user.name}&ensp;
           li.list-group-item
             span.fa.fa-fw.fa-envelope
             | &ensp;#{user.email}
-          li.list-group-item
-            span.fa.fa-fw.fa-venus-mars
-            | &ensp;#{user.info.gender}
-          li.list-group-item
-            span.fa.fa-fw.fa-address-card
-            | &ensp;#{user.info.firstName} #{user.info.lastName}
-          li.list-group-item
-            span.fa.fa-fw.fa-map
-            | &ensp;#{user.info.address.street} 
-            br
-            | #{user.info.address.zipCode} #{user.info.address.city}
-            br
-            | #{user.info.address.state }
-          li.list-group-item
-            span.fa.fa-fw.fa-child
-            | &ensp;#{user.profile.bio}
-          li.list-group-item
-            span.fa.fa-fw.fa-star
-            | &ensp;#{user.profile.preferences}
-    .col-sm-12.col-md-6
-      .card.mx-auto.my-2
-        .card-body
-          h4.card-title Profile
-        ul.list-group.list-group-flush.text-left
-          li.list-group-item
-            | Some quick example text to build on the card title and make up the bulk of the card's content.
-            | Some quick example text to build on the card title and make up the bulk of the card's content.
-            | Some quick example text to build on the card title and make up the bulk of the card's content.
-            | Some quick example text to build on the card title and make up the bulk of the card's content.
-            | Some quick example text to build on the card title and make up the bulk of the card's content.
-          li.list-group-item
-            a.btn.btn-primary(href="#") Go somewhere        
-    .col-sm-12.col-md-6
+          if (user.info.gender)
+            li.list-group-item
+              span.fa.fa-fw.fa-venus-mars
+              | &ensp;#{user.info.gender}
+          if (user.info.firstName && user.info.lastName)        
+            li.list-group-item
+              span.fa.fa-fw.fa-address-card
+              | &ensp;#{user.info.firstName} #{user.info.lastName}
+          if (user.info.address.street && user.info.address.zipCode && user.info.address.city)
+            li.list-group-item
+              span.fa.fa-fw.fa-map
+              | &ensp;#{user.info.address.street} #{user.info.address.zipCode} #{user.info.address.city}
+              if (user.info.address.state)
+                | &nbsp;#{user.info.address.state }
+          if (user.profile.bio)
+            li.list-group-item
+              span.fa.fa-fw.fa-child
+              | &ensp;#{user.profile.bio}
+          if (user.profile.preferences)
+            li.list-group-item
+              span.fa.fa-fw.fa-star
+              | &ensp;#{user.profile.preferences}
+          if (isAdmin || isOwner)    
+            li.list-group-item.text-center
+                a.btn.btn-block.btn-dark(href="/user/edit/" + user.id)
+                  span.fa.fa-fw.fa-pencil
+                  | &nbsp;Modifier les informations
+                a.btn.btn-block.btn-danger(href="/user/delete/" + user.id)
+                  span.fa.fa-fw.fa-trash
+                  | &nbsp;Supprimer le compte
+    .col-sm-12.col-md-5
       include ./friendList.pug
     .col-sm-12
       include ./profileWall.pug
