@@ -4,6 +4,7 @@ const passport = require('passport');
 const auth = require('../config/auth');
 const router = express.Router();
 const User = require('../models/User');
+const Post = require('../models/Post');
 router.get('/', auth.loggedIn, (req, res, next) => {
   res.redirect('/user/' + req.user._id);
 });
@@ -36,10 +37,16 @@ router.post('/login', passport.authenticate('local-login', {
 }));
 router.get('/edit/:userId', auth.owner, (req, res, next) => {
   User.findOne({'_id': req.params.userId})
+  .populate({
+    path: 'posts',
+    sort: { date: -1 }
+  })
+  .exec()
   .then((user) => {
     res.render('editProfile', {
       title: 'Profile',
       user: user,
+      viewer: req.user,
       isOwner: req.isOwner,
       isFriend: req.isFriend,
       isAdmin: req.isAdmin
@@ -92,10 +99,16 @@ router.post('/update/:userId', auth.owner, (req, res, next) => {
 });
 router.get('/:userId', auth.friend, (req, res, next) => {
   User.findOne({'_id': req.params.userId})
+  .populate({
+    path: 'posts',
+    sort: { date: -1 }
+  })
+  .exec()
   .then((user) => {
     res.render('profile', {
       title: 'Profile',
       user: user,
+      viewer: req.user,
       isOwner: req.isOwner,
       isFriend: req.isFriend,
       isAdmin: req.isAdmin

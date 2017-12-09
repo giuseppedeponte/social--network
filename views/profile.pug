@@ -1,10 +1,10 @@
 extends layout
   
 block content
-  div.row
-    .col-sm-12.col-md-7
-      .card.mx-auto
-        img.card-img-top.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/" + user.email alt="Card image cap")
+  .row
+    .col.col-md-5
+      .card
+        img.card-img-top.img-fluid(src="https://api.adorable.io/avatars/" + user.email alt="Card image cap")
         ul.list-group.list-group-flush.text-left
           li.list-group-item.d-flex.justify-content-between.align-items-center
             span
@@ -32,7 +32,9 @@ block content
           if (user.info.address.street && user.info.address.zipCode && user.info.address.city)
             li.list-group-item
               span.fa.fa-fw.fa-map
-              | &ensp;#{user.info.address.street} #{user.info.address.zipCode} #{user.info.address.city}
+              | &ensp;#{user.info.address.street}
+              br 
+              | #{user.info.address.zipCode} #{user.info.address.city}
               if (user.info.address.state)
                 | &nbsp;#{user.info.address.state }
           if (user.profile.bio)
@@ -48,10 +50,8 @@ block content
                 a.btn.btn-block.btn-dark(href="/user/edit/" + user.id)
                   span.fa.fa-fw.fa-pencil
                   | &nbsp;Modifier les informations
-                a.btn.btn-block.btn-danger(href="/user/delete/" + user.id)
-                  span.fa.fa-fw.fa-trash
-                  | &nbsp;Supprimer le compte
-    .col-sm-12.col-md-5
-      include ./friendList.pug
-    .col-sm-12
+    .col-12.col-md-7
       include ./profileWall.pug
+    .col-12
+      include ./friendList.pug
+    

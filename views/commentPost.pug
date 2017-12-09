@@ -1,0 +1,14 @@
+form(method="POST" action="/blog/comment/" + user.id + '/' + post._id)
+  .input-group.input-group-sm
+    label.sr-only(for="commentText") Post
+    input(type="hidden",
+          name="commentAuthor",
+          id="commentAuthor",
+          value=viewer.name)
+    input.form-control(type="text",
+          name="commentText",
+          id="commentText"
+          placeholder="Répondez à ce post...")
+    span.input-group-btn
+      button.btn.btn-dark(type="submit")
+        i.fa.fa-send

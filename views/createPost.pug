@@ -1,0 +1,14 @@
+form(method="POST" action="/blog/create/" + user._id)
+  .input-group
+    label.sr-only(for="postText") Post
+    input(type="hidden",
+          name="postAuthor",
+          id="postAuthor",
+          value=viewer.name)
+    input.form-control(type="text",
+          name="postText",
+          id="postText"
+          placeholder="Écrivez quelque chose...")
+    span.input-group-btn
+      button.btn.btn-dark(type="submit")
+        i.fa.fa-send

@@ -2,9 +2,9 @@ extends layout
 
 block content
   .row
-    .col-sm-12.col-md-6
+    .col-sm-12
       form.card.mx-auto(method="POST" action="/user/update/" + user._id)
-        img.card-img-top.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/"+user.email alt="Card image cap")
+        //- img.card-img-top.img-fluid(src="https://api.adorable.io/avatars/"+user.email alt="Card image cap")
         ul.list-group.list-group-flush.text-left
           li.list-group-item.d-flex.justify-content-between.align-items-center
             span
@@ -116,7 +116,3 @@ block content
               a.btn.btn-block.btn-danger(href="/user/delete/" + user.id)
                 span.fa.fa-fw.fa-trash
                 | &nbsp;Supprimer le compte
-    .col-sm-12.col-md-6
-      include ./friendList.pug
-    .col-sm-12
-      include ./profileWall.pug

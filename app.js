@@ -22,6 +22,7 @@ require('./config/passport')(passport);
 
 const index = require('./routes/index');
 const user = require('./routes/user');
+const blog = require('./routes/blog');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use(flash());
 
 app.use('/', index);
 app.use('/user', user);
+app.use('/blog', blog);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
