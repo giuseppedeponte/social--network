@@ -98,6 +98,13 @@ router.post('/update/:userId', auth.owner, (req, res, next) => {
   });
 });
 router.get('/:userId', auth.friend, (req, res, next) => {
+  res.io.on('connection', (socket) => {
+    socket.emit('Handshake++', 'Ping');
+    socket.on('Handshake++', (data) => {
+      console.log(data);
+      socket.emit('Handshake++', 'Pong');
+    });
+  });
   User.findOne({'_id': req.params.userId})
   .populate({
     path: 'posts',
