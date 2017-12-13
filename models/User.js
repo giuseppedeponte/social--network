@@ -46,8 +46,17 @@ const userSchema = Schema({
   posts: [{
     type: Schema.Types.ObjectId,
     ref: 'Post'
-  }]
+  }],
+  socket: {
+    type: String,
+    default: ''
+  }
 });
+userSchema.methods.updateSocket = function(socket) {
+  socket = socket || '';
+  this.socket = socket;
+  return this.save();
+};
 userSchema.methods.generateHash = (password) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };

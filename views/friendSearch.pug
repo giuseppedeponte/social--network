@@ -1,0 +1,14 @@
+form#friendSearchForm(method="POST" action="/user/search/" + user._id)
+  .input-group
+    label.sr-only(for="friendSearch") Friend search
+    input(type="hidden",
+          name="user",
+          id="user",
+          value=user._id)
+    input.form-control(type="text",
+          name="friendSearch",
+          id="friendSearch"
+          placeholder="Recherchez un·e ami·e...")
+    span.input-group-btn
+      button.btn.btn-dark(type="submit")
+        i.fa.fa-search

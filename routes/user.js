@@ -99,11 +99,7 @@ router.post('/update/:userId', auth.owner, (req, res, next) => {
 });
 router.get('/:userId', auth.friend, (req, res, next) => {
   res.io.on('connection', (socket) => {
-    socket.emit('Handshake++', 'Ping');
-    socket.on('Handshake++', (data) => {
-      console.log(data);
-      socket.emit('Handshake++', 'Pong');
-    });
+    require('../websockets/profile').connect(res.io, socket, req.user);
   });
   User.findOne({'_id': req.params.userId})
   .populate({
