@@ -64,7 +64,7 @@ userSchema.methods.validPassword = function(password) {
   return bcrypt.compareSync(password, this.password);
 };
 userSchema.methods.hasRole = function(role) {
-  return this.role >= role;
+  return this.role === role;
 };
 userSchema.methods.hasFriend = function(userId) {
   return this.friends.some((friend) => {

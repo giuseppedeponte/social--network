@@ -3,19 +3,14 @@
     h4.d-flex.justify-content-between.align-items-center
       span Amis 
       span.badge.badge-dark.px-3= user.friends.length
-  ul.list-group.list-group-flush.text-left
+  div.list-group.list-group-flush.text-left
     if (isOwner)
-      li.list-group-item
+      .list-group-item
         include ./friendSearch.pug
-    li.list-group-item.d-flex.justify-content-between.align-items-center
-      a(href="#") Mr. Patate
-      img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/A123")
-    li.list-group-item.d-flex.justify-content-between.align-items-center
-      a(href="#") Mme. Patate
-      img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/B456")
-    li.list-group-item.d-flex.justify-content-between.align-items-center
-      a(href="#") Mr. Patate Junior
-      img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/C789")
-    li.list-group-item.d-flex.justify-content-between.align-items-center
-      a(href="#") M.lle Patate Junior
-      img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/0AB")
+    a(href="/user/{{ id }}")#friendSearchItem.list-group-item.list-group-item-action.list-group-item-info.d-none.justify-content-between.align-items-center
+      span {{ name }}
+      img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/{{ id }}")
+    each friend in user.friends
+      a(href="/user/" + friend._id).list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
+        span #{friend.name || friend.email}
+        img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)

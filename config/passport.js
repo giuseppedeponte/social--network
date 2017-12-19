@@ -2,7 +2,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
-
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@social-network.fr';
 module.exports = (passport) => {
   passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -35,13 +35,37 @@ passport.use('local-signup',new LocalStrategy({
     let newUser = new User();
     newUser.email = email;
     newUser.password = newUser.generateHash(password);
-    newUser.save((err) => {
-      if (err) {
-        console.log(err);
-        throw err;
-      }
-      return done(null, newUser);
-    });
+    console.log(email);
+    newUser.role = email === ADMIN_EMAIL ? 'admin' : 'user';
+    if (newUser.role === 'admin') {
+      newUser.save((err, savedUser) => {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        return done(null, savedUser);
+      });
+    } else {
+      User
+      .findOne({'email': ADMIN_EMAIL })
+      .then((admin) => {
+        newUser.friends.push(admin);
+        newUser.save((err, savedUser) => {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+          admin.friends.push(savedUser);
+          admin.save((err) => {
+            if (err) {
+              console.log(err);
+              throw err;
+            }
+            return done(null, savedUser);
+          });
+        });
+      });
+    }
   })
   .catch((err) => {
     return done(err);

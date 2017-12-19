@@ -106,6 +106,7 @@ router.get('/:userId', auth.friend, (req, res, next) => {
     path: 'posts',
     sort: { date: -1 }
   })
+  .populate('friends')
   .exec()
   .then((user) => {
     res.render('profile', {

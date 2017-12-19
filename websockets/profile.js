@@ -1,5 +1,8 @@
 const querystring = require('querystring');
 const User = require('../models/User');
+const escapeRegExp = (str) => {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+};
 // Store if the user is connected or not in the database
 module.exports.connect = (io, socket, user) => {
   user.updateSocket(socket.id)
@@ -27,27 +30,42 @@ module.exports.connect = (io, socket, user) => {
   // Search for a friend
   socket.on('friendSearch', (query) => {
     query = querystring.parse(query);
-    query.friendSearch = new RegExp(query.friendSearch,'i');
+    query.friendSearch = new RegExp(escapeRegExp(query.friendSearch),'i');
+    let filter;
+    if (user.hasRole('admin')) {
+      filter = {};
+    } else {
+      filter = {
+        $or: [
+          { name: query.friendSearch },
+          { email: query.friendSearch },
+          { 'info.firstName': query.friendSearch },
+          { 'info.lastName': query.friendSearch }
+        ]
+      };
+    }
     User
-    .find({
-      $or: [
-        { name: query.friendSearch },
-        { email: query.friendSearch },
-        { 'info.firstName': query.friendSearch },
-        { 'info.lastName': query.friendSearch }
-      ]
-    })
+    .find(filter)
     .select({
       name: 1,
       _id: 1,
-      socket: 1
+      socket: 1,
+      email: 1
     })
     .then((result) => {
+      let users = [];
       result.map((person) => {
-        person.isFriend = user.hasFriend(person._id);
+        if (!user._id.equals(person._id)) {
+          users.push({
+            name: person.name,
+            email: person.email,
+            _id: person._id,
+            socket: person.socket,
+            isFriend: user.hasRole('admin') || user.hasFriend(person._id) ? true : false
+          });
+        }
       });
-      console.log(io);
-      socket.emit('friendSearch', result);
+      socket.emit('friendSearch', users);
     })
     .catch((err) => {
       console.log(err);
