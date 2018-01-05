@@ -6,11 +6,22 @@ socket.on('Handshake++', function(data) {
 
 // prevent friendSearch form from submitting
 $(function() {
-
+  $('#friendSearchInfo small a').click(function(e) {
+    e.preventDefault();
+    $('#friendSearch').val('');
+    $('.friendSearchItem').remove();
+    $('#friendSearchInfo small').addClass('invisible');
+    $('#friendSearchInfo small span').text('');
+  });
   $('#friendSearchForm').on('submit', function(e) {
     e.preventDefault();
+    if ($('#friendSearch').val().trim() === '') {
+      $('.friendSearchItem').remove();
+      $('#friendSearchInfo small').addClass('invisible');
+      $('#friendSearchInfo small span').text('');
+      return;
+    }
     var q = $(this).serialize();
-    console.log(q);
     socket.emit('friendSearch', q);
   });
   socket.on('friendSearch', function(users) {
@@ -27,6 +38,8 @@ $(function() {
       .addClass('d-flex')
       .removeClass('d-none');
     }
+    $('#friendSearchInfo small span').text(users.length + ' utilisateurs trouvés.');
+    $('#friendSearchInfo small').removeClass('invisible');
     console.log(users);
   });
 

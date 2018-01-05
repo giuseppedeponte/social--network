@@ -11,4 +11,11 @@ form#friendSearchForm(method="POST" action="/user/search/" + user._id)
           placeholder="Recherchez un·e ami·e...")
     span.input-group-btn
       button.btn.btn-dark(type="submit")
-        i.fa.fa-search
+        i.fa.fa-search 
+  input-group#friendSearchInfo
+    small.form-text.text-muted.invisible
+      | &ensp;
+      span 2 utilisateurs trouvés.
+      | &ensp;
+      a(href="#") Réinitialiser la recherche.
+    

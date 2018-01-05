@@ -56,11 +56,13 @@ module.exports.connect = (io, socket, user) => {
       let users = [];
       result.map((person) => {
         if (!user._id.equals(person._id)) {
+          let online = typeof io.sockets.connected[person.socket] !== 'undefined';
           users.push({
             name: person.name,
             email: person.email,
             _id: person._id,
             socket: person.socket,
+            online: online,
             isFriend: user.hasRole('admin') || user.hasFriend(person._id) ? true : false
           });
         }

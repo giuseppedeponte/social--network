@@ -16,6 +16,13 @@ const session = require('express-session');
 const configDB = require('./config/database');
 mongoose.connect(configDB.url, configDB.options).then((db) => {
   console.log('Database connected');
+  require('./models/User').updateMany({}, { $set: { socket: '' }}, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('resetting user socket', result);
+    }
+  });
 });
 
 require('./config/passport')(passport);
