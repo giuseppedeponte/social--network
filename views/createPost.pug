@@ -1,4 +1,4 @@
-form(method="POST" action="/blog/create/" + user._id)
+form#createPost(method="POST" action="/blog/create/" + user._id)
   .input-group
     label.sr-only(for="postText") Post
     input(type="hidden",

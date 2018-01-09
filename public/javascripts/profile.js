@@ -4,8 +4,19 @@ socket.on('Handshake++', function(data) {
   console.log(data);
 });
 
-// prevent friendSearch form from submitting
 $(function() {
+  // BLOGGING
+  $('#createPost').on('submit', function(e) {
+    e.preventDefault();
+    if ($('#postText').val().trim() === '') {
+      return;
+    }
+    socket.emit('createPost', $(this).serialize());
+  });
+  socket.on('createPost', function(data) {
+    console.log(data);
+  });
+  // FRIEND SEARCH
   $('#friendSearchInfo small a').click(function(e) {
     e.preventDefault();
     $('#friendSearch').val('');

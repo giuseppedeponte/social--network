@@ -1,4 +1,4 @@
-form(method="POST" action="/blog/comment/" + user.id + '/' + post._id)
+form#commentPost(method="POST" action="/blog/comment/" + user.id + '/' + post._id)
   .input-group.input-group-sm
     label.sr-only(for="commentText") Post
     input(type="hidden",

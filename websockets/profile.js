@@ -27,6 +27,19 @@ module.exports.connect = (io, socket, user) => {
           console.log(err);
         });
   });
+  // Create a post
+  socket.on('createPost', (query) => {
+    query = querystring.parse(query);
+    if (query.postText && query.postAuthor) {
+      user.createPost(query.postText, query.postAuthor)
+      .then(() => {
+        socket.emit('createPost', 'Yeah !');
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+    }
+  });
   // Search for a friend
   socket.on('friendSearch', (query) => {
     query = querystring.parse(query);

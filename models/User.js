@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const userRoles = ['guest', 'user', 'admin'];
+const Post = require('../models/Post');
 const Schema = mongoose.Schema;
 const userSchema = Schema({
   email: {
@@ -43,6 +44,16 @@ const userSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   }],
+  friendRequests: {
+    sent: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    received: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }]
+  },
   posts: [{
     type: Schema.Types.ObjectId,
     ref: 'Post'
@@ -52,6 +63,7 @@ const userSchema = Schema({
     default: ''
   }
 });
+// CONNECTION
 userSchema.methods.updateSocket = function(socket) {
   socket = socket || '';
   this.socket = socket;
@@ -69,6 +81,42 @@ userSchema.methods.hasRole = function(role) {
 userSchema.methods.hasFriend = function(userId) {
   return this.friends.some((friend) => {
     return friend.equals(userId);
+  });
+};
+// BLOGGING
+userSchema.methods.createPost = function(postText, postAuthor) {
+  let post = new Post({
+    text: postText.trim(),
+    author: postAuthor.trim(),
+    user: this._id,
+    date: Date.now(),
+    comments: []
+  });
+  return post.save()
+  .then(() => {
+    this.posts.unshift(post);
+    return this.save();
+  });
+};
+userSchema.methods.commentPost = function(commentText, commentAuthor, postId) {
+  let post;
+  return Post.findOne({'_id': postId})
+  .then((p) => {
+    post = p;
+    post.comments.unshift({
+      author: commentAuthor,
+      text: commentText.trim()
+    });
+    return post.save();
+  });
+};
+userSchema.methods.deletePost = function(postId) {
+  this.posts.filter((post) => {
+    return post != postId;
+  });
+  return this.save()
+  .then(() => {
+    return Post.remove({ '_id': postId});
   });
 };
 module.exports = mongoose.model('User', userSchema);
