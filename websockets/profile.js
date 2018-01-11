@@ -3,6 +3,8 @@ const User = require('../models/User');
 const escapeRegExp = (str) => {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 };
+const pug = require('pug');
+const profileWallPost = pug.compileFile('./views/profileWallPost.pug');
 // Store if the user is connected or not in the database
 module.exports.connect = (io, socket, user) => {
   user.updateSocket(socket.id)
@@ -30,10 +32,53 @@ module.exports.connect = (io, socket, user) => {
   // Create a post
   socket.on('createPost', (query) => {
     query = querystring.parse(query);
-    if (query.postText && query.postAuthor) {
-      user.createPost(query.postText, query.postAuthor)
-      .then(() => {
-        socket.emit('createPost', 'Yeah !');
+    if (query.postText && query.postAuthor && query.userId) {
+      User
+      .findOne({'_id': query.userId})
+      .then((u) => {
+        return u.createPost(query.postText, query.postAuthor);
+      })
+      .then((us) => {
+        let post = profileWallPost({
+          post: us.posts[0],
+          user: {
+            _id: us._id
+          },
+          viewer: {
+            name: user.name,
+            email: user.email
+          }
+        });
+        socket.emit('createPost', {
+          postId: us.posts[0]._id,
+          html: post
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+  });
+  // Comment a post
+  socket.on('commentPost', (query) => {
+    query = querystring.parse(query);
+    if (query.commentText && query.commentAuthor && query.postId) {
+      user.commentPost(query.commentText, query.commentAuthor, query.postId)
+      .then((post) => {
+        postHtml = profileWallPost({
+          post: post,
+          user: {
+            _id: post.user
+          },
+          viewer: {
+            name: user.name,
+            email: user.email
+          }
+        });
+        socket.emit('commentPost', {
+          postId: post._id,
+          html: postHtml
+        });
       })
       .catch((err) => {
         console.log(err);

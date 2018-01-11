@@ -4,7 +4,7 @@ form#createPost(method="POST" action="/blog/create/" + user._id)
     input(type="hidden",
           name="postAuthor",
           id="postAuthor",
-          value=viewer.name)
+          value=viewer.name || viewer.email)
     input.form-control(type="text",
           name="postText",
           id="postText"

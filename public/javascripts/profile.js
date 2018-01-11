@@ -7,14 +7,31 @@ socket.on('Handshake++', function(data) {
 $(function() {
   // BLOGGING
   $('#createPost').on('submit', function(e) {
+    var userId = '&userId=' + this.action.split('/').pop();
     e.preventDefault();
     if ($('#postText').val().trim() === '') {
       return;
     }
-    socket.emit('createPost', $(this).serialize());
+    socket.emit('createPost', $(this).serialize() + userId);
+    $('#postText').val('');
   });
   socket.on('createPost', function(data) {
-    console.log(data);
+    var newPost = $(data.html);
+    $('#postCarousel .carousel-inner .active').removeClass('active');
+    $('#postCarousel .carousel-inner').prepend(newPost);
+  });
+  $('#commentPost').on('submit', function(e) {
+    var postId = '&postId=' + this.action.split('/').pop();
+    e.preventDefault();
+    if ($('#commentText').val().trim() === '') {
+      return;
+    }
+    socket.emit('commentPost', $(this).serialize() + postId);
+    $('#commentText').val('');
+  });
+  socket.on('commentPost', function(data) {
+    $('#postCarousel .carousel-inner .active').removeClass('active');
+    $('#post'+data.postId).replaceWith(data.html);
   });
   // FRIEND SEARCH
   $('#friendSearchInfo small a').click(function(e) {

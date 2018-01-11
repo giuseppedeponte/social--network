@@ -96,11 +96,15 @@ userSchema.methods.createPost = function(postText, postAuthor) {
   .then(() => {
     this.posts.unshift(post);
     return this.save();
+  })
+  .then(() => {
+    return this.populate('posts').execPopulate();
   });
 };
 userSchema.methods.commentPost = function(commentText, commentAuthor, postId) {
   let post;
-  return Post.findOne({'_id': postId})
+  return Post
+  .findOne({'_id': postId})
   .then((p) => {
     post = p;
     post.comments.unshift({
@@ -108,6 +112,9 @@ userSchema.methods.commentPost = function(commentText, commentAuthor, postId) {
       text: commentText.trim()
     });
     return post.save();
+  })
+  .then(() => {
+    return post;
   });
 };
 userSchema.methods.deletePost = function(postId) {
@@ -117,6 +124,9 @@ userSchema.methods.deletePost = function(postId) {
   return this.save()
   .then(() => {
     return Post.remove({ '_id': postId});
+  })
+  .then(() => {
+    return this.populate('posts').execPopulate();
   });
 };
 module.exports = mongoose.model('User', userSchema);

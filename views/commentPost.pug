@@ -1,10 +1,10 @@
-form#commentPost(method="POST" action="/blog/comment/" + user.id + '/' + post._id)
+form#commentPost(method="POST" action="/blog/comment/" + user._id + '/' + post._id)
   .input-group.input-group-sm
     label.sr-only(for="commentText") Post
     input(type="hidden",
           name="commentAuthor",
           id="commentAuthor",
-          value=viewer.name)
+          value=viewer.name || viewer.email)
     input.form-control(type="text",
           name="commentText",
           id="commentText"
