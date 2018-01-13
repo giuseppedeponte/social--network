@@ -1,4 +1,4 @@
-.carousel-item(id="post"+post._id,class= i ? "" : "active")
+.carousel-item(id="post"+post._id, class= i ? "" : "active")
   .row
     .col-10
       small #{post.date.toString().substr(4,21)}
@@ -13,7 +13,8 @@
           strong  #{comment.author} : 
           | #{comment.text}
     .col-2.text-right
-      a(href="/blog/delete/" + user._id + "/" + post._id)
-        i.fa.fa-trash
+      if (viewer._id.equals(post.authorId) || isOwner || isAdmin)
+        a.deletePost(href="/blog/delete/" + user._id + "/" + post._id)
+          i.fa.fa-trash
     .col-12.my-2
       include ./commentPost.pug 

@@ -19,6 +19,7 @@ $(function() {
     var newPost = $(data.html);
     $('#postCarousel .carousel-inner .active').removeClass('active');
     $('#postCarousel .carousel-inner').prepend(newPost);
+    $('#postCount').text($('.carousel-item').length);
   });
   $('#commentPost').on('submit', function(e) {
     var postId = '&postId=' + this.action.split('/').pop();
@@ -31,7 +32,17 @@ $(function() {
   });
   socket.on('commentPost', function(data) {
     $('#postCarousel .carousel-inner .active').removeClass('active');
-    $('#post'+data.postId).replaceWith(data.html);
+    $('#post' + data.postId).replaceWith(data.html);
+  });
+  $('a.deletePost').click(function(e) {
+    e.preventDefault();
+    var postId = this.href.split('/').pop();
+    socket.emit('deletePost', postId);
+  });
+  socket.on('deletePost', function(postId) {
+    $('#post' + postId).remove();
+    $('.carousel-item').first().addClass('active');
+    $('#postCount').text($('.carousel-item').length);
   });
   // FRIEND SEARCH
   $('#friendSearchInfo small a').click(function(e) {

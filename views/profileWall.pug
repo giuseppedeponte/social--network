@@ -2,18 +2,17 @@
   .card-body
     h4.d-flex.justify-content-between.align-items-center
       span Fil d'actualité 
-      span.badge.badge-dark.px-3 #{user.posts.length}
+      span#postCount.badge.badge-dark.px-3 #{user.posts.length}
   ul.list-group.list-group-flush.text-left
     li.list-group-item
       include ./createPost.pug
-    if (user.posts.length > 0)
-      li.list-group-item.bg-warning.py-4
-        a.carousel-control-prev(href="#postCarousel" role="button" data-slide="prev")
-          span.carousel-control-prev-icon(aria-hidden="true")
-          span.sr-only Previous
-        a.carousel-control-next(href="#postCarousel" role="button" data-slide="next")
-          span.carousel-control-next-icon(aria-hidden="true")
-          span.sr-only Next
+    li.list-group-item.bg-warning.py-4
+      a.carousel-control-prev(href="#postCarousel" role="button" data-slide="prev")
+        span.carousel-control-prev-icon(aria-hidden="true")
+        span.sr-only Previous
+      a.carousel-control-next(href="#postCarousel" role="button" data-slide="next")
+        span.carousel-control-next-icon(aria-hidden="true")
+        span.sr-only Next
     li.list-group-item
       #postCarousel.carousel.slide(data-interval="false")
         .carousel-inner

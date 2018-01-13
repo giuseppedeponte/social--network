@@ -7,11 +7,11 @@ const Post = require('../models/Post');
 const router = express.Router();
 
 router.post('/create/:userId', auth.friend, function(req, res) {
-  if (req.body.postText && req.body.postAuthor && req.params.userId) {
+  if (req.body.postText && req.body.postAuthor && req.body.postAuthorId && req.params.userId) {
     let post;
     User.findOne({'_id': req.params.userId})
     .then((user) => {
-      return user.createPost(req.body.postText, req.body.postAuthor);
+      return user.createPost(req.body.postText, req.body.postAuthor, req.body.postAuthorId);
     })
     .then(() => {
       res.redirect('/user/' + req.params.userId);

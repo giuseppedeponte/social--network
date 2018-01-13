@@ -84,10 +84,11 @@ userSchema.methods.hasFriend = function(userId) {
   });
 };
 // BLOGGING
-userSchema.methods.createPost = function(postText, postAuthor) {
+userSchema.methods.createPost = function(text, author, authorId) {
   let post = new Post({
-    text: postText.trim(),
-    author: postAuthor.trim(),
+    text: text.trim(),
+    author: author.trim(),
+    authorId: authorId,
     user: this._id,
     date: Date.now(),
     comments: []
@@ -126,7 +127,7 @@ userSchema.methods.deletePost = function(postId) {
     return Post.remove({ '_id': postId});
   })
   .then(() => {
-    return this.populate('posts').execPopulate();
+    return postId;
   });
 };
 module.exports = mongoose.model('User', userSchema);

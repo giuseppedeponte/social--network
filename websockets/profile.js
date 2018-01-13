@@ -1,5 +1,6 @@
 const querystring = require('querystring');
 const User = require('../models/User');
+const Post = require('../models/Post');
 const escapeRegExp = (str) => {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 };
@@ -32,21 +33,24 @@ module.exports.connect = (io, socket, user) => {
   // Create a post
   socket.on('createPost', (query) => {
     query = querystring.parse(query);
-    if (query.postText && query.postAuthor && query.userId) {
+    if (query.postText && query.postAuthor && query.postAuthorId && query.userId) {
       User
       .findOne({'_id': query.userId})
       .then((u) => {
-        return u.createPost(query.postText, query.postAuthor);
+        return u.createPost(query.postText, query.postAuthor, query.postAuthorId);
       })
       .then((us) => {
         let post = profileWallPost({
           post: us.posts[0],
+          isOwner: us._id.equals(user._id),
+          isAdmin: user.role === 'admin',
           user: {
             _id: us._id
           },
           viewer: {
             name: user.name,
-            email: user.email
+            email: user.email,
+            _id: user._id
           }
         });
         socket.emit('createPost', {
@@ -67,12 +71,15 @@ module.exports.connect = (io, socket, user) => {
       .then((post) => {
         postHtml = profileWallPost({
           post: post,
+          isOwner: post.user.equals(user._id),
+          isAdmin: user.role === 'admin',
           user: {
             _id: post.user
           },
           viewer: {
             name: user.name,
-            email: user.email
+            email: user.email,
+            _id: user._id
           }
         });
         socket.emit('commentPost', {
@@ -83,6 +90,26 @@ module.exports.connect = (io, socket, user) => {
       .catch((err) => {
         console.log(err);
       })
+    }
+  });
+  socket.on('deletePost', (postId) => {
+    if (postId) {
+      Post
+      .findOne({ '_id': postId})
+      .populate('user')
+      .then((post) => {
+        if (user._id.equals(post.user._id)
+            || user._id.equals(post.authorId)
+            || user.role === 'admin') {
+          post.user.deletePost(postId)
+          .then((id) => {
+            socket.emit('deletePost', id);
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     }
   });
   // Search for a friend

@@ -7,6 +7,7 @@ const postSchema = Schema({
     ref: 'User'
   },
   author: String,
+  authorId: String,
   text: String,
   date: Date,
   comments: [

@@ -5,6 +5,10 @@ form#createPost(method="POST" action="/blog/create/" + user._id)
           name="postAuthor",
           id="postAuthor",
           value=viewer.name || viewer.email)
+    input(type="hidden",
+          name="postAuthorId",
+          id="postAuthorId",
+          value=viewer._id)
     input.form-control(type="text",
           name="postText",
           id="postText"
