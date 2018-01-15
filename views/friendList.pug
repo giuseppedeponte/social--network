@@ -12,5 +12,7 @@
       img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/{{ id }}")
     each friend in user.friends
       a(href="/user/" + friend._id).list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
-        span #{friend.name || friend.email}
+        span 
+          small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
+          | &ensp;#{friend.name || friend.email}
         img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)
