@@ -67,7 +67,8 @@
               | &emsp;
               small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
               | &ensp;#{friend.name || friend.email}
-          if (friend.role !== 'admin' && (isOwner || viewer.friends.indexOf(friend._id) >= 0))
+          if (viewer.role === 'admin')
+          else if (friend.role !== 'admin' && (isOwner || viewer.friends.indexOf(friend._id) >= 0))
             button.btn.btn-dark.btn-sm.removeFriend
               i.fa.fa-fw.fa-minus
           else if (!isOwner)
