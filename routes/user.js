@@ -98,7 +98,7 @@ router.post('/update/:userId', auth.owner, (req, res, next) => {
   });
 });
 router.get('/:userId', auth.friend, (req, res, next) => {
-  res.io.on('connection', (socket) => {
+  res.io.once('connection', (socket) => {
     require('../websockets/profile').connect(res.io, socket, req.user);
   });
   User.findOne({'_id': req.params.userId})
@@ -107,6 +107,8 @@ router.get('/:userId', auth.friend, (req, res, next) => {
     sort: { date: -1 }
   })
   .populate('friends')
+  .populate('friendRequests.sent')
+  .populate('friendRequests.received')
   .exec()
   .then((user) => {
     res.render('profile', {

@@ -4,15 +4,72 @@
       span Amis 
       span.badge.badge-dark.px-3= user.friends.length
   div.list-group.list-group-flush.text-left
+    .list-group-item
+      include ./friendSearch.pug
+    a(href="/user/{{ id }}")#friendSearchItem.friendA.list-group-item.list-group-item-action.list-group-item-info.d-none.justify-content-between.align-items-center
+      span
+        img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/{{ id }}")
+        span
+          | &emsp; {{ name }}
+      if (isOwner)
+        button.btn.btn-dark.btn-sm.addFriend
+          i.fa.fa-fw.fa-plus
+      else
+        button.btn.btn-dark.btn-sm.shareFriend
+          i.fa.fa-fw.fa-share-alt
     if (isOwner)
-      .list-group-item
-        include ./friendSearch.pug
-    a(href="/user/{{ id }}")#friendSearchItem.list-group-item.list-group-item-action.list-group-item-info.d-none.justify-content-between.align-items-center
-      span {{ name }}
-      img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/{{ id }}")
+      each friend in user.friendRequests.sent
+        a(href="/user/" + friend._id).friendA.list-group-item.list-group-item-secondary.d-flex.justify-content-between.align-items-center
+          span
+            img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)
+            span
+              | &emsp;
+              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
+              | &ensp;#{friend.name || friend.email}
+          button.btn.btn-dark.btn-sm(disabled="disabled")
+            i.fa.fa-fw.fa-cog.fa-spin
+      each friend in user.friendRequests.received
+        a(href="/user/" + friend._id).friendA.list-group-item.list-group-item-action.list-group-item-warning.d-flex.justify-content-between.align-items-center
+          span
+            img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)
+            span
+              | &emsp;
+              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
+              | &ensp;#{friend.name || friend.email}
+          button.btn.btn-dark.btn-sm.confirmFriend
+            i.fa.fa-fw.fa-check
     each friend in user.friends
-      a(href="/user/" + friend._id).list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
-        span 
-          small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
-          | &ensp;#{friend.name || friend.email}
-        img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)
+      if (viewer.friendRequests.sent.indexOf(friend._id) > -1)
+        a(href="/user/" + friend._id).friendA.list-group-item.list-group-item-secondary.d-flex.justify-content-between.align-items-center
+          span
+            img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)
+            span
+              | &emsp;
+              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
+              | &ensp;#{friend.name || friend.email}
+          button.btn.btn-dark.btn-sm(disabled="disabled")
+            i.fa.fa-fw.fa-cog.fa-spin
+      else if (viewer.friendRequests.received.indexOf(friend._id) > -1) 
+        a(href="/user/" + friend._id).friendA.list-group-item.list-group-item-action.list-group-item-warning.d-flex.justify-content-between.align-items-center
+          span
+            img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)
+            span
+              | &emsp;
+              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
+              | &ensp;#{friend.name || friend.email}
+          button.btn.btn-dark.btn-sm.confirmFriend
+            i.fa.fa-fw.fa-check
+      else
+        a(href="/user/" + friend._id).friendA.list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
+          span
+            img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/" + friend._id)
+            span
+              | &emsp;
+              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
+              | &ensp;#{friend.name || friend.email}
+          if (friend.role !== 'admin' && (isOwner || viewer.friends.indexOf(friend._id) >= 0))
+            button.btn.btn-dark.btn-sm.removeFriend
+              i.fa.fa-fw.fa-minus
+          else if (!isOwner)
+            button.btn.btn-dark.btn-sm.addFriend
+              i.fa.fa-fw.fa-plus

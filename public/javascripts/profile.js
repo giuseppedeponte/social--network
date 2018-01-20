@@ -1,7 +1,14 @@
 var socket = io();
+var ownUserId = '';
+window.onbeforeunload = function() {
+  socket.disconnect();
+};
 socket.emit('Handshake++', 'Ping');
 socket.on('Handshake++', function(data) {
-  console.log(data);
+  ownUserId = data;
+  $('.friendA[href="/user/' + ownUserId + '"] .btn').remove();
+  $('.friendA[href="/user/' + ownUserId + '"]')
+    .addClass('list-group-item-success');
 });
 
 $(function() {
@@ -44,6 +51,56 @@ $(function() {
     $('.carousel-item').first().addClass('active');
     $('#postCount').text($('.carousel-item').length);
   });
+  $('.friendA').click(function(e) {
+    if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {
+      e.preventDefault();
+    }
+  });
+  // ADD FRIEND
+  var addFriend = function(e) {
+    var personId = $(this).parent('a').attr('href').split('/')[2];
+    if (personId === ownUserId) {
+      return;
+    }
+    socket.emit('addFriend', personId);
+  };
+  $('.addFriend').on('click', addFriend);
+  socket.on('addFriend', function(friendId) {
+    $('.friendA[href="/user/' + friendId + '"] .btn')
+      .children(':first')
+      .removeClass('fa-plus')
+      .addClass('fa-cog fa-spin');
+    $('.friendA[href="/user/' + friendId + '"]')
+      .removeClass('friendA')
+      .addClass('list-group-item-secondary');
+  });
+  // CONFIRM FRIEND
+  var confirmFriend = function(e) {
+    var personId = $(this).parent('a').attr('href').split('/')[2];
+    if (personId === ownUserId) {
+      return;
+    }
+    socket.emit('confirmFriend', personId);
+  };
+  $('.confirmFriend').on('click', confirmFriend);
+  socket.on('confirmFriend', function(friendId) {
+    $('.friendA[href="/user/' + friendId + '"] .btn')
+      .remove();
+    $('.friendA[href="/user/' + friendId + '"]')
+      .removeClass('list-group-item-warning');
+  });
+  // REMOVE FRIEND
+  var removeFriend = function(e) {
+    var personId = $(this).parent('a').attr('href').split('/')[2];
+    if (personId === ownUserId) {
+      return;
+    }
+    socket.emit('removeFriend', personId);
+  };
+  $('.removeFriend').on('click', removeFriend);
+  socket.on('removeFriend', function(friendId) {
+    $('.friendA[href="/user/' + friendId + '"]').remove();
+  });
   // FRIEND SEARCH
   $('#friendSearchInfo small a').click(function(e) {
     e.preventDefault();
@@ -80,6 +137,10 @@ $(function() {
     $('#friendSearchInfo small span').text(users.length + ' utilisateurs trouvés.');
     $('#friendSearchInfo small').removeClass('invisible');
     console.log(users);
+    $('.friendA').click(function(e) {
+      if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {
+        e.preventDefault();
+      }
+    });
   });
-
 });

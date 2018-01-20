@@ -11,7 +11,7 @@ module.exports.connect = (io, socket, user) => {
   user.updateSocket(socket.id)
       .then(() => {
         console.log(user._id + ' is now connected');
-        socket.emit('Handshake++', 'Ping');
+        socket.emit('Handshake++', user._id);
       })
       .catch((err) => {
         console.log(err);
@@ -157,6 +157,102 @@ module.exports.connect = (io, socket, user) => {
     .catch((err) => {
       console.log(err);
       socket.emit('friendSearch', []);
+    });
+  });
+  // Send Friend Request
+  socket.on('addFriend', (friendId) => {
+    if (user._id.equals(friendId)
+    || user.friends.indexOf(friendId) > -1
+    || user.friendRequests.sent.indexOf(friendId) > -1
+    || user.friendRequests.received.indexOf(friendId) > -1) {
+      return;
+    }
+    User.findOne({ '_id': friendId })
+    .then((person) => {
+      if (person.friendRequests.received.indexOf(user._id) > 1) {
+        throw new Error('friend request already received');
+      }
+      person.friendRequests.received.push(user._id);
+      return person.save();
     })
-  })
+    .then(() => {
+      if (user.friendRequests.sent.indexOf(user._id) > 1) {
+        throw new Error('friend request already sent');
+      }
+      user.friendRequests.sent.push(friendId);
+      return user.save();
+    })
+    .then(() => {
+      console.log('added Friend', user._id, friendId);
+      socket.emit('addFriend', friendId);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  });
+  // Accept Friend Request
+  socket.on('confirmFriend', (friendId) => {
+    console.log('confirmFriend', friendId);
+    if (user._id.equals(friendId)) {
+      return;
+    }
+    User.findOne({ '_id': friendId })
+    .then((person) => {
+      person.friendRequests.sent = person.friendRequests.sent.filter((req) => {
+        return !user._id.equals(req);
+      });
+      person.friends.push(user._id);
+      console.log(person);
+      return person.save();
+    })
+    .then(() => {
+      user.friendRequests.received = user.friendRequests.received.filter((req) => {
+        return !req.equals(friendId);
+      });
+      user.friends.push(friendId);
+      console.log(user);
+      return user.save();
+    })
+    .then(() => {
+      console.log('added Friend', user._id, friendId);
+      socket.emit('confirmFriend', friendId);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  });
+  socket.on('removeFriend', (friendId) => {
+    console.log('removeFriend', friendId);
+    if (user._id.equals(friendId)) {
+      return;
+    }
+    User.findOne({ '_id': friendId })
+    .then((person) => {
+      person.friends = person.friends.filter((f) => {
+        return !user._id.equals(f);
+      });
+      return person.save();
+    })
+    .then(() => {
+      user.friends = user.friends.filter((f) => {
+        return !f.equals(friendId);
+      });
+      return user.save();
+    })
+    .then(() => {
+      console.log('removed Friend', user._id, friendId);
+      socket.emit('removeFriend', friendId);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  });
+  // reset friend requests
+  // User.find({}).then((users) => {
+  //   users.map((u) => {
+  //     u.friendRequests.sent = [];
+  //     u.friendRequests.received = [];
+  //     u.save();
+  //   });
+  // })
 };
