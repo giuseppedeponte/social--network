@@ -138,18 +138,25 @@ module.exports.connect = (io, socket, user) => {
       email: 1
     })
     .then((result) => {
-      let users = [];
+      users = {};
+      users.friends = [];
+      users.others = [];
       result.map((person) => {
         if (!user._id.equals(person._id)) {
           let online = typeof io.sockets.connected[person.socket] !== 'undefined';
-          users.push({
+          let u = {
             name: person.name,
             email: person.email,
             _id: person._id,
             socket: person.socket,
             online: online,
             isFriend: user.hasRole('admin') || user.hasFriend(person._id) ? true : false
-          });
+          };
+          if (u.isFriend) {
+            users.friends.push(u);
+          } else {
+            users.others.push(u);
+          }
         }
       });
       socket.emit('friendSearch', users);

@@ -108,6 +108,7 @@ $(function() {
     $('.friendSearchItem').remove();
     $('#friendSearchInfo small').addClass('invisible');
     $('#friendSearchInfo small span').text('');
+    $('.friendItem').removeClass('d-none').addClass('d-flex');
   });
   $('#friendSearchForm').on('submit', function(e) {
     e.preventDefault();
@@ -115,6 +116,7 @@ $(function() {
       $('.friendSearchItem').remove();
       $('#friendSearchInfo small').addClass('invisible');
       $('#friendSearchInfo small span').text('');
+      $('.friendItem').removeClass('d-none').addClass('d-flex');
       return;
     }
     var q = $(this).serialize();
@@ -122,21 +124,39 @@ $(function() {
   });
   socket.on('friendSearch', function(users) {
     $('.friendSearchItem').remove();
-    for (var i = 0; users[i]; i++) {
+    $('.friendItem').removeClass('d-flex').addClass('d-none');
+    var u = null;
+    for (var i = 0; users.others[i]; i++) {
+      u = users.others[i];
       $(
         $('#friendSearchItem')
         .prop('outerHTML')
-        .replace(new RegExp('{{ name }}', 'g'), users[i].name || users[i].email)
-        .replace(new RegExp('{{ id }}', 'g'), users[i]._id)
+        .replace(new RegExp('{{ name }}', 'g'), u.name || u.email)
+        .replace(new RegExp('{{ id }}', 'g'), u._id)
       )
       .addClass('friendSearchItem')
       .insertAfter('#friendSearchItem')
       .addClass('d-flex')
-      .removeClass('d-none');
+      .removeClass('d-none')
+      .attr('id', '');
     }
-    $('#friendSearchInfo small span').text(users.length + ' utilisateurs trouvés.');
+    for (var i = 0; users.friends[i]; i++) {
+      u = users.friends[i];
+      $(
+        $('#friendSearchItem')
+        .prop('outerHTML')
+        .replace(new RegExp('{{ name }}', 'g'), u.name || u.email)
+        .replace(new RegExp('{{ id }}', 'g'), u._id)
+      )
+      .addClass('friendSearchItem')
+      .insertAfter('#friendSearchItem')
+      .addClass('d-flex')
+      .removeClass('list-group-item-info')
+      .removeClass('d-none')
+      .attr('id', '');
+    }
+    $('#friendSearchInfo small span').text((users.friends.length + users.others.length) + ' utilisateurs trouvés.');
     $('#friendSearchInfo small').removeClass('invisible');
-    console.log(users);
     $('.friendA').click(function(e) {
       if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {
         e.preventDefault();
