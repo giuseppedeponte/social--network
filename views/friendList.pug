@@ -6,13 +6,13 @@
   div.list-group.list-group-flush.text-left
     .list-group-item.pt-4
       include ./friendSearch.pug
-    a(href="/user/{{ id }}")#friendSearchItem.friendA.list-group-item.list-group-item-action.list-group-item-info.d-none.justify-content-between.align-items-center
+    a(href="/user/{{ id }}")#friendSearchItem.friendA.list-group-item.list-group-item-action.d-none.justify-content-between.align-items-center
       span
         img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/{{ id }}")
         span
           | &emsp; {{ name }}
-      button.btn.btn-sm.addFriend
-        i.fa.fa-fw.fa-plus
+      button.btn.btn-sm
+        i.fa.fa-fw
     if (isOwner)
       each friend in user.friendRequests.sent
         a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-secondary.d-flex.justify-content-between.align-items-center
@@ -68,5 +68,5 @@
             button.btn.btn-sm.removeFriend.btn-danger
               i.fa.fa-fw.fa-minus
           else if (!isOwner)
-            button.btn.btn-sm.addFriend
+            button.btn.btn-sm.btn-dark.addFriend
               i.fa.fa-fw.fa-plus

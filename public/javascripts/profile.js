@@ -126,36 +126,65 @@ $(function() {
     $('.friendSearchItem').remove();
     $('.friendItem').removeClass('d-flex').addClass('d-none');
     var u = null;
-    for (var i = 0; users.others[i]; i++) {
-      u = users.others[i];
-      $(
+    for (var i = 0; users[i]; i++) {
+      u = users[i];
+      var friendItem = $(
         $('#friendSearchItem')
         .prop('outerHTML')
         .replace(new RegExp('{{ name }}', 'g'), u.name || u.email)
         .replace(new RegExp('{{ id }}', 'g'), u._id)
       )
       .addClass('friendSearchItem')
-      .insertAfter('#friendSearchItem')
+      .insertAfter('#friendSearchItem');
+      if (u.relation === 'friend') {
+        if (u.role !== 'admin') {
+          friendItem
+          .children('.btn')
+          .addClass('removeFriend btn-danger')
+          .on('click', removeFriend)
+          .children('.btn i')
+          .addClass('fa-minus');
+        } else {
+          friendItem
+          .children('.btn')
+          .remove();
+        }
+      } else if (u.relation === 'requestReceived') {
+        friendItem
+        .addClass('list-group-item-warning')
+        .children('.btn')
+        .addClass('confirmFriend btn-success')
+        .on('click', confirmFriend)
+        .children('.btn i')
+        .addClass('fa-check');
+      } else if (u.relation === 'requestSent') {
+        friendItem
+        .addClass('list-group-item-secondary')
+        .children('.btn')
+        .attr('disabled', 'disabled')
+        .children('.btn i')
+        .addClass('fa-cog fa-spin');
+      } else {
+        friendItem
+        .addClass('list-group-item-info')
+        .children('.btn')
+        .addClass('addFriend btn-dark')
+        .on('click', addFriend)
+        .children('.btn i')
+        .addClass('fa-plus');
+      }
+      console.log(friendItem.children('.btn i'));
+      friendItem
       .addClass('d-flex')
       .removeClass('d-none')
-      .attr('id', '');
+      .attr('id', '')
+      .click(function(e) {
+        if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {
+          e.preventDefault();
+        }
+      });
     }
-    for (var i = 0; users.friends[i]; i++) {
-      u = users.friends[i];
-      $(
-        $('#friendSearchItem')
-        .prop('outerHTML')
-        .replace(new RegExp('{{ name }}', 'g'), u.name || u.email)
-        .replace(new RegExp('{{ id }}', 'g'), u._id)
-      )
-      .addClass('friendSearchItem')
-      .insertAfter('#friendSearchItem')
-      .addClass('d-flex')
-      .removeClass('list-group-item-info')
-      .removeClass('d-none')
-      .attr('id', '');
-    }
-    $('#friendSearchInfo small span').text((users.friends.length + users.others.length) + ' utilisateurs trouvés.');
+    $('#friendSearchInfo small span').text((users.length) + ' utilisateurs trouvés.');
     $('#friendSearchInfo small').removeClass('invisible');
     $('.friendA').click(function(e) {
       if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {

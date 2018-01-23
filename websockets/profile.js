@@ -135,28 +135,32 @@ module.exports.connect = (io, socket, user) => {
       name: 1,
       _id: 1,
       socket: 1,
-      email: 1
+      email: 1,
+      role: 1
     })
     .then((result) => {
-      users = {};
-      users.friends = [];
-      users.others = [];
+      users = [];
       result.map((person) => {
         if (!user._id.equals(person._id)) {
           let online = typeof io.sockets.connected[person.socket] !== 'undefined';
+          let relation = '';
+          if(user.friends.indexOf(person._id) >= 0) {
+            relation = 'friend';
+          } else if (user.friendRequests.sent.indexOf(person._id) >= 0) {
+            relation = 'requestSent';
+          } else if (user.friendRequests.received.indexOf(person._id) >= 0) {
+            relation = 'requestReceived';
+          }
           let u = {
             name: person.name,
             email: person.email,
             _id: person._id,
             socket: person.socket,
             online: online,
-            isFriend: user.hasRole('admin') || user.hasFriend(person._id) ? true : false
+            role: person.role,
+            relation: relation
           };
-          if (u.isFriend) {
-            users.friends.push(u);
-          } else {
-            users.others.push(u);
-          }
+          users.push(u);
         }
       });
       socket.emit('friendSearch', users);
