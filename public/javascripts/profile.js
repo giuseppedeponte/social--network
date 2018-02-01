@@ -67,11 +67,18 @@ $(function() {
   $('.addFriend').on('click', addFriend);
   socket.on('addFriend', function(friendId) {
     $('.friendA[href="/user/' + friendId + '"] .btn')
+      .removeClass('btn-dark')
+      .removeClass('addFriend')
+      .attr('disabled', 'disabled')
+      .attr('title', 'Invitation en cours')
       .children(':first')
       .removeClass('fa-plus')
       .addClass('fa-cog fa-spin');
     $('.friendA[href="/user/' + friendId + '"]')
-      .removeClass('friendA')
+      .addClass('friendA')
+      .addClass('friendItem')
+      .removeClass('friendSearchItem')
+      .removeClass('list-group-item-info')
       .addClass('list-group-item-secondary');
   });
   // CONFIRM FRIEND
@@ -85,7 +92,11 @@ $(function() {
   $('.confirmFriend').on('click', confirmFriend);
   socket.on('confirmFriend', function(friendId) {
     $('.friendA[href="/user/' + friendId + '"] .btn')
-      .remove();
+    .addClass('removeFriend btn-danger')
+    .attr('title', 'Supprimer de la liste d\'amis')
+    .on('click', removeFriend)
+    .children('.btn i')
+    .addClass('fa-minus');
     $('.friendA[href="/user/' + friendId + '"]')
       .removeClass('list-group-item-warning');
   });
@@ -136,11 +147,12 @@ $(function() {
       )
       .addClass('friendSearchItem')
       .insertAfter('#friendSearchItem');
-      if (u.relation === 'friend') {
-        if (u.role !== 'admin') {
+      if (u.relation === 'friend' || u.relation === 'admin') {
+        if (u.role !== 'admin' && u.relation !== 'admin') {
           friendItem
           .children('.btn')
           .addClass('removeFriend btn-danger')
+          .attr('title', 'Supprimer de la liste d\'amis')
           .on('click', removeFriend)
           .children('.btn i')
           .addClass('fa-minus');
@@ -154,6 +166,7 @@ $(function() {
         .addClass('list-group-item-warning')
         .children('.btn')
         .addClass('confirmFriend btn-success')
+        .attr('title', 'En attente de confirmation')
         .on('click', confirmFriend)
         .children('.btn i')
         .addClass('fa-check');
@@ -162,6 +175,7 @@ $(function() {
         .addClass('list-group-item-secondary')
         .children('.btn')
         .attr('disabled', 'disabled')
+        .attr('title', 'Invitation en cours')
         .children('.btn i')
         .addClass('fa-cog fa-spin');
       } else {
@@ -169,11 +183,11 @@ $(function() {
         .addClass('list-group-item-info')
         .children('.btn')
         .addClass('addFriend btn-dark')
+        .attr('title', 'Envoyer une invitation')
         .on('click', addFriend)
         .children('.btn i')
         .addClass('fa-plus');
       }
-      console.log(friendItem.children('.btn i'));
       friendItem
       .addClass('d-flex')
       .removeClass('d-none')

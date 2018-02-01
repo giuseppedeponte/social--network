@@ -116,19 +116,14 @@ module.exports.connect = (io, socket, user) => {
   socket.on('friendSearch', (query) => {
     query = querystring.parse(query);
     query.friendSearch = new RegExp(escapeRegExp(query.friendSearch),'i');
-    let filter;
-    if (user.hasRole('admin')) {
-      filter = {};
-    } else {
-      filter = {
-        $or: [
-          { name: query.friendSearch },
-          { email: query.friendSearch },
-          { 'info.firstName': query.friendSearch },
-          { 'info.lastName': query.friendSearch }
-        ]
-      };
-    }
+    let filter = {
+      $or: [
+        { name: query.friendSearch },
+        { email: query.friendSearch },
+        { 'info.firstName': query.friendSearch },
+        { 'info.lastName': query.friendSearch }
+      ]
+    };
     User
     .find(filter)
     .select({
@@ -144,7 +139,9 @@ module.exports.connect = (io, socket, user) => {
         if (!user._id.equals(person._id)) {
           let online = typeof io.sockets.connected[person.socket] !== 'undefined';
           let relation = '';
-          if(user.friends.indexOf(person._id) >= 0) {
+          if (user.role === 'admin') {
+            relation = 'admin';
+          } else if(user.friends.indexOf(person._id) >= 0) {
             relation = 'friend';
           } else if (user.friendRequests.sent.indexOf(person._id) >= 0) {
             relation = 'requestSent';

@@ -4,15 +4,16 @@
       span Amis 
       span.badge.badge-dark.px-3= user.friends.length
   div.list-group.list-group-flush.text-left
-    .list-group-item.pt-4
-      include ./friendSearch.pug
-    a(href="/user/{{ id }}")#friendSearchItem.friendA.list-group-item.list-group-item-action.d-none.justify-content-between.align-items-center
-      span
-        img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/{{ id }}")
+    if (isOwner)
+      .list-group-item.pt-4
+        include ./friendSearch.pug
+      a(href="/user/{{ id }}")#friendSearchItem.friendA.list-group-item.list-group-item-action.d-none.justify-content-between.align-items-center
         span
-          | &emsp; {{ name }}
-      button.btn.btn-sm
-        i.fa.fa-fw
+          img.img-fluid.img-thumbnail(src="https://api.adorable.io/avatars/30/{{ id }}")
+          span
+            | &emsp; {{ name }}
+        button.btn.btn-sm
+          i.fa.fa-fw
     if (isOwner)
       each friend in user.friendRequests.sent
         a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-secondary.d-flex.justify-content-between.align-items-center
@@ -22,7 +23,7 @@
               | &emsp;
               small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
               | &ensp;#{friend.name || friend.email}
-          button.btn.btn-sm(disabled="disabled")
+          button.btn.btn-sm(disabled="disabled", title="Invitation en cours")
             i.fa.fa-fw.fa-cog.fa-spin
       each friend in user.friendRequests.received
         a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.list-group-item-warning.d-flex.justify-content-between.align-items-center
@@ -32,7 +33,7 @@
               | &emsp;
               small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
               | &ensp;#{friend.name || friend.email}
-          button.btn.btn-sm.confirmFriend.btn-success
+          button.btn.btn-sm.confirmFriend.btn-success(title="En attente de confirmation")
             i.fa.fa-fw.fa-check
     each friend in user.friends
       if (viewer.friendRequests.sent.indexOf(friend._id) > -1)
@@ -43,7 +44,7 @@
               | &emsp;
               small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
               | &ensp;#{friend.name || friend.email}
-          button.btn.btn-sm(disabled="disabled")
+          button.btn.btn-sm(disabled="disabled", title="Invitation en cours")
             i.fa.fa-fw.fa-cog.fa-spin
       else if (viewer.friendRequests.received.indexOf(friend._id) > -1) 
         a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.list-group-item-warning.d-flex.justify-content-between.align-items-center
@@ -53,7 +54,7 @@
               | &emsp;
               small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
               | &ensp;#{friend.name || friend.email}
-          button.btn.btn-sm.confirmFriend.btn-success
+          button.btn.btn-sm.confirmFriend.btn-success(title="En attente de confirmation")
             i.fa.fa-fw.fa-check
       else
         a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
@@ -63,10 +64,10 @@
               | &emsp;
               small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
               | &ensp;#{friend.name || friend.email}
-          if (viewer.role === 'admin')
+          if (viewer.role === 'admin' || friend.role === 'admin')
           else if (friend.role !== 'admin' && (isOwner || viewer.friends.indexOf(friend._id) >= 0))
-            button.btn.btn-sm.removeFriend.btn-danger
+            button.btn.btn-sm.removeFriend.btn-danger(title="Supprimer de la liste d'amis")
               i.fa.fa-fw.fa-minus
           else if (!isOwner)
-            button.btn.btn-sm.btn-dark.addFriend
+            button.btn.btn-sm.btn-dark.addFriend(title="Envoyer une invitation")
               i.fa.fa-fw.fa-plus
