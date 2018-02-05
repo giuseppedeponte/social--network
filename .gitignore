@@ -30,3 +30,5 @@ node_modules
 npm-debug.log
 
 docs
+# DotEnv config file
+.env

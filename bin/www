@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-
+require('dotenv').config();
 var app = require('../app').app;
 var debug = require('debug')('social-network:server');
 var http = require('http');

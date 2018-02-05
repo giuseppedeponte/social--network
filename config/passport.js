@@ -35,7 +35,6 @@ passport.use('local-signup',new LocalStrategy({
     let newUser = new User();
     newUser.email = email;
     newUser.password = newUser.generateHash(password);
-    console.log(email);
     newUser.role = email === ADMIN_EMAIL ? 'admin' : 'user';
     if (newUser.role === 'admin') {
       newUser.save((err, savedUser) => {

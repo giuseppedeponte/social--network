@@ -3,7 +3,7 @@ extends layout
 block content
   .row
     .col-sm-12
-      form.card.mx-auto(method="POST" action="/user/update/" + user._id)
+      form.card.mx-auto(method="POST" enctype="multipart/form-data" action="/user/update/" + user._id)
         //- img.card-img-top.img-fluid(src="https://api.adorable.io/avatars/"+user._id alt="Card image cap")
         ul.list-group.list-group-flush.text-left
           li.list-group-item.d-flex.justify-content-between.align-items-center
@@ -20,6 +20,17 @@ block content
                                  id="name"
                                  value=user.name
                                  placeholder="Pseudonyme")
+          li.list-group-item
+            label.sr-only(for="avatar") Image de profile
+            .input-group.mb-2.mb-sm-0
+              .input-group-addon
+                span.fa.fa-fw.fa-photo
+              input.form-control.form-control-sm(
+                               accept="image/*"
+                               type="file" 
+                               name="avatar"
+                               id="avatar"
+                               placeholder="Image de profile")
           if (user.role === 'admin')
             li.list-group-item
               label.sr-only(for="role") Role
