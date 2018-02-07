@@ -5,6 +5,52 @@ const auth = require('../config/auth');
 const router = express.Router();
 const User = require('../models/User');
 const Post = require('../models/Post');
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const S3 = new AWS.S3({
+  apiVersion: '2006-03-01',
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+});
+console.log(S3);
+const upload = multer({
+  limits: {
+    fileSize: 500000
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+      cb(null, true);
+    } else {
+      cb(new Error('bad image type'));
+    }
+  }
+});
+const avatarUpload = (req, res, next) => {
+  upload.single('avatar')(req, res, (err) => {
+    if (err) {
+      req.flash('updateMessage', 'Oops, les modifications n\'ont pas pu être sauvegardées.');
+      res.redirect('/user/edit/' + req.params.userId);
+    } else {
+      if (req.params.userId && req.file) {
+        let key = req.params.userId + '/avatar.' + req.file.originalname.split('.').pop();
+        S3.putObject({
+          Body: req.file.buffer,
+          Bucket: process.env.S3_BUCKET,
+          Key: key,
+          ContentType: req.file.mimetype,
+          ACL: 'public-read'
+        }, (er, data) => {
+          if (er) {
+            console.log(er);
+          } else {
+            req.body.avatarUrl = S3.endpoint.href + process.env.S3_BUCKET + '/' + key;
+          }
+          next();
+        });
+      }
+    }
+  });
+}
 router.get('/', auth.loggedIn, (req, res, next) => {
   res.redirect('/user/' + req.user._id);
 });
@@ -49,14 +95,15 @@ router.get('/edit/:userId', auth.owner, (req, res, next) => {
       viewer: req.user,
       isOwner: req.isOwner,
       isFriend: req.isFriend,
-      isAdmin: req.isAdmin
+      isAdmin: req.isAdmin,
+      message: req.flash('updateMessage') || ''
     });
   })
   .catch((e) => {
     res.redirect('/404');
   });
 });
-router.post('/update/:userId', auth.owner, (req, res, next) => {
+router.post('/update/:userId', auth.owner, avatarUpload, (req, res, next) => {
   User.findOne({'_id': req.params.userId})
   .then((user) => {
     if (!user) {
@@ -80,6 +127,7 @@ router.post('/update/:userId', auth.owner, (req, res, next) => {
                      || req.user.info.address.city;
     req.user.info.address.state = req.body.state.trim()
                      || req.user.info.address.state;
+    req.user.profile.image = req.body.avatarUrl || req.user.profile.image;
     req.user.profile.bio = req.body.bio.trim()
                      || req.user.profile.bio;
     req.user.profile.preferences = req.body.preferences.trim()

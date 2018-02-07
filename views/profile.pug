@@ -4,7 +4,8 @@ block content
   .row
     .col.col-md-5
       .card
-        img.card-img-top.img-fluid(src="https://api.adorable.io/avatars/" + user._id alt="Card image cap")
+        - var avatar = user.profile.image || 'https://api.adorable.io/avatars/' + user._id
+        img.card-img-top.img-fluid(src=avatar alt="Card image cap")
         ul.list-group.list-group-flush.text-left
           li.list-group-item.d-flex.justify-content-between.align-items-center
             small
