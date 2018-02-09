@@ -134,6 +134,7 @@ $(function() {
     socket.emit('friendSearch', q);
   });
   socket.on('friendSearch', function(users) {
+    console.log(users);
     $('.friendSearchItem').remove();
     $('.friendItem').removeClass('d-flex').addClass('d-none');
     var u = null;
@@ -147,6 +148,9 @@ $(function() {
       )
       .addClass('friendSearchItem')
       .insertAfter('#friendSearchItem');
+      if (u.image) {
+        friendItem.find('img').attr('src', u.image);
+      }
       if (u.relation === 'friend' || u.relation === 'admin') {
         if (u.role !== 'admin' && u.relation !== 'admin') {
           friendItem

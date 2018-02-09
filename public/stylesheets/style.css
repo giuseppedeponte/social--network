@@ -16,4 +16,14 @@ a {
 .carousel-item-left {
   height: 0; }
 
+.profileImage {
+  max-height: 300px;
+  object-fit: contain; }
+
+.friendItem img,
+.friendSearchItem img {
+  max-height: 30px;
+  max-width: 30px;
+  object-fit: cover; }
+
 /*# sourceMappingURL=style.css.map */

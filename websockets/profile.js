@@ -131,7 +131,8 @@ module.exports.connect = (io, socket, user) => {
       _id: 1,
       socket: 1,
       email: 1,
-      role: 1
+      role: 1,
+      'profile.image': 1
     })
     .then((result) => {
       users = [];
@@ -155,6 +156,7 @@ module.exports.connect = (io, socket, user) => {
             socket: person.socket,
             online: online,
             role: person.role,
+            image: person.profile.image,
             relation: relation
           };
           users.push(u);

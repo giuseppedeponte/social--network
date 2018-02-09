@@ -12,7 +12,6 @@ const S3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
-console.log(S3);
 const upload = multer({
   limits: {
     fileSize: 500000
@@ -32,7 +31,7 @@ const avatarUpload = (req, res, next) => {
       res.redirect('/user/edit/' + req.params.userId);
     } else {
       if (req.params.userId && req.file) {
-        let key = req.params.userId + '/avatar.' + req.file.originalname.split('.').pop();
+        let key = req.params.userId + '/' + Date.now() + '.' + req.file.originalname.split('.').pop();
         S3.putObject({
           Body: req.file.buffer,
           Bucket: process.env.S3_BUCKET,
