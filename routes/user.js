@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const express = require('express');
 const passport = require('passport');
 const auth = require('../config/auth');
+const emailer = require('../config/email');
 const router = express.Router();
 const User = require('../models/User');
 const Post = require('../models/Post');
@@ -110,7 +111,11 @@ router.post('/reset', (req, res, next) => {
       }
       let password = buf.toString('hex').substr(0,7);
       user.password = user.generateHash(password);
-      console.log(password);
+      emailer.send({
+        to: user.email,
+        subject: 'Votre nouveau mot de passe',
+        text: password
+      });
       user.save();
       req.flash('loginMessage', 'Un email vous a été envoyé avec vos nouveaux idéntifiants');
       res.redirect('/user/login');
