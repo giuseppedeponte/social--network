@@ -231,6 +231,33 @@ module.exports.connect = (io, socket, user) => {
       console.log(err);
     });
   });
+  // Refuse Friend Request
+  socket.on('refuseFriend', (friendId) => {
+    console.log('refuseFriend', friendId);
+    if (user._id.equals(friendId)) {
+      return;
+    }
+    User.findOne({ '_id': friendId })
+    .then((person) => {
+      person.friendRequests.sent = person.friendRequests.sent.filter((req) => {
+        return !user._id.equals(req);
+      });
+      return person.save();
+    })
+    .then(() => {
+      user.friendRequests.received = user.friendRequests.received.filter((req) => {
+        return !req.equals(friendId);
+      });
+      return user.save();
+    })
+    .then(() => {
+      console.log('friend request refused', user._id, friendId);
+      socket.emit('refuseFriend', friendId);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  });
   socket.on('removeFriend', (friendId, userId) => {
     userId = userId && user.role === 'admin' ? userId : user._id;
     console.log('removeFriend', userId, friendId);

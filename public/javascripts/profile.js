@@ -52,13 +52,13 @@ $(function() {
     $('#postCount').text($('.carousel-item').length);
   });
   $('.friendA').click(function(e) {
-    if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {
+    if ($(e.target).hasClass('btn') || $(e.target).parents().hasClass('btn')) {
       e.preventDefault();
     }
   });
   // ADD FRIEND
   var addFriend = function(e) {
-    var personId = $(this).parent('a').attr('href').split('/')[2];
+    var personId = $(this).parents('a').attr('href').split('/')[2];
     if (personId === ownUserId) {
       return;
     }
@@ -83,7 +83,7 @@ $(function() {
   });
   // CONFIRM FRIEND
   var confirmFriend = function(e) {
-    var personId = $(this).parent('a').attr('href').split('/')[2];
+    var personId = $(this).parents('a').attr('href').split('/')[2];
     if (personId === ownUserId) {
       return;
     }
@@ -91,6 +91,7 @@ $(function() {
   };
   $('.confirmFriend').on('click', confirmFriend);
   socket.on('confirmFriend', function(friendId) {
+    $('.friendA[href="/user/' + friendId + '"] .refuseFriend').remove();
     $('.friendA[href="/user/' + friendId + '"] .btn')
     .addClass('removeFriend btn-danger')
     .attr('title', 'Supprimer de la liste d\'amis')
@@ -100,9 +101,21 @@ $(function() {
     $('.friendA[href="/user/' + friendId + '"]')
       .removeClass('list-group-item-warning');
   });
+  // REFUSE FRIEND
+  var refuseFriend = function(e) {
+    var personId = $(this).parents('a').attr('href').split('/')[2];
+    if (personId === ownUserId) {
+      return;
+    }
+    socket.emit('refuseFriend', personId);
+  };
+  $('.refuseFriend').on('click', refuseFriend);
+  socket.on('refuseFriend', function(friendId) {
+    $('.friendA[href="/user/' + friendId + '"]').remove();
+  });
   // REMOVE FRIEND
   var removeFriend = function(e) {
-    var personId = $(this).parent('a').attr('href').split('/')[2];
+    var personId = $(this).parents('a').attr('href').split('/')[2];
     var ownerId = window.location.pathname.split('/').pop();
     if (personId === ownUserId) {
       return;
@@ -155,42 +168,52 @@ $(function() {
       if (u.relation === 'friend' || u.relation === 'admin') {
         if (u.role !== 'admin' && u.relation !== 'admin') {
           friendItem
-          .children('.btn')
+          .find('.btn')
           .addClass('removeFriend btn-danger')
           .attr('title', 'Supprimer de la liste d\'amis')
           .on('click', removeFriend)
-          .children('.btn i')
+          .find('i')
           .addClass('fa-minus');
         } else {
           friendItem
-          .children('.btn')
+          .find('.btn')
           .remove();
         }
       } else if (u.relation === 'requestReceived') {
+        friendItem.addClass('list-group-item-warning');
         friendItem
-        .addClass('list-group-item-warning')
-        .children('.btn')
+        .find('.btn')
+        .clone()
+        .appendTo(friendItem.find('.btn-group'))
+        .addClass('refuseFriend btn-dark')
+        .attr('title', 'Refuser la demande')
+        .on('click', refuseFriend)
+        .find('i')
+        .addClass('fa-trash')
+        friendItem
+        .find('.btn')
+        .first()
         .addClass('confirmFriend btn-success')
-        .attr('title', 'En attente de confirmation')
+        .attr('title', 'Ajouter à la liste d\'amis')
         .on('click', confirmFriend)
-        .children('.btn i')
+        .find('i')
         .addClass('fa-check');
       } else if (u.relation === 'requestSent') {
         friendItem
         .addClass('list-group-item-secondary')
-        .children('.btn')
+        .find('.btn')
         .attr('disabled', 'disabled')
         .attr('title', 'Invitation en cours')
-        .children('.btn i')
+        .find('i')
         .addClass('fa-cog fa-spin');
       } else {
         friendItem
         .addClass('list-group-item-info')
-        .children('.btn')
+        .find('.btn')
         .addClass('addFriend btn-dark')
         .attr('title', 'Envoyer une invitation')
         .on('click', addFriend)
-        .children('.btn i')
+        .find('i')
         .addClass('fa-plus');
       }
       friendItem
@@ -198,7 +221,7 @@ $(function() {
       .removeClass('d-none')
       .attr('id', '')
       .click(function(e) {
-        if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {
+        if ($(e.target).hasClass('btn') || $(e.target).parents().hasClass('btn')) {
           e.preventDefault();
         }
       });
@@ -206,7 +229,7 @@ $(function() {
     $('#friendSearchInfo small span').text((users.length) + ' utilisateurs trouvés.');
     $('#friendSearchInfo small').removeClass('invisible');
     $('.friendA').click(function(e) {
-      if ($(e.target).hasClass('btn') || $(e.target).parent().hasClass('btn')) {
+      if ($(e.target).hasClass('btn') || $(e.target).parents().hasClass('btn')) {
         e.preventDefault();
       }
     });
