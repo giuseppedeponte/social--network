@@ -9,7 +9,7 @@ block content
           strong= message
       hr
     .col-sm-12
-      form(method="POST" action="/user/login")
+      form(method="POST" action="/user/reset")
         .form-group.text-left
           label(for="email") Email *
           input#email.form-control(type="email"
@@ -17,15 +17,10 @@ block content
                                    placeholder="Adresse email"
                                    required
                                    autofocus)
-        .form-group.text-left
-          label(for="password") Mot de passe *
-          input#password.form-control(type="password"
-                                      name="password"
-                                      placeholder="Mot de passe"
-                                      required)
-        input.btn.btn-lg.btn-block.btn-dark(type="submit" value="Se connecter")
+          small Un email vous sera envoyé à cette adresse avec des nouveaux identifiants
+        input.btn.btn-lg.btn-block.btn-dark(type="submit" value="Valider")
         .btn-group-vertical.btn-group-sm.mt-2
           a.btn.btn-block(href="/user/signup")
             | Pas encore inscrits ? 
-          a.btn.btn-block(href="/user/reset")
-            | Mot de passe oublié ?
+          a.btn.btn-block(href="/user/login")
+            | Déjà inscrit ?

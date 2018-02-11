@@ -12,3 +12,11 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light
         a.nav-link(href="/inbox") Messagerie      
       li.nav-item
         a.nav-link(href="/chat") Chat
+      if (!viewer) 
+        li.nav-item
+          a.nav-link(href="/user/login") Connexion
+        li.nav-item
+          a.nav-link(href="/user/signin") Inscription
+      else
+        li.nav-item
+          a.nav-link(href="/user/logout") Déconnexion

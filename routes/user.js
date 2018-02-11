@@ -1,4 +1,5 @@
 'use strict';
+const crypto = require('crypto');
 const express = require('express');
 const passport = require('passport');
 const auth = require('../config/auth');
@@ -65,6 +66,12 @@ router.get('/signup', (req, res, next) => {
     message: req.flash('signupMessage')
   });
 });
+router.get('/reset', (req, res, next) => {
+  res.render('reset', {
+    title: 'Réinitialisation du mot de passe',
+    message: req.flash('resetMessage')
+  });
+});
 router.get('/logout', (req, res, next) => {
   req.logout();
   req.flash('indexMessage', 'Vous êtes bien déconnectés.');
@@ -80,6 +87,37 @@ router.post('/login', passport.authenticate('local-login', {
   failureRedirect: '/user/login',
   failureFlash: true
 }));
+router.post('/reset', (req, res, next) => {
+  let email = req.body.email.toLowerCase();
+  if (email === '') {
+    req.flash('resetMessage', 'Merci d\'indiquer une adresse email');
+    res.redirect('/user/reset');
+    return;
+  }
+  User.findOne({'email': email})
+  .then((user) => {
+    if (!user) {
+      req.flash('resetMessage', 'Aucun utilisateur existe avec cet adresse email');
+      res.redirect('/user/reset');
+      return;
+    }
+    crypto.randomBytes(20, (err, buf) => {
+      if (err) {
+        throw err;
+      }
+      let password = buf.toString('hex').substr(0,7);
+      user.password = user.generateHash(password);
+      console.log(password);
+      user.save();
+      req.flash('loginMessage', 'Un email vous a été envoyé avec vos nouveaux idéntifiants');
+      res.redirect('/user/login');
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+    return done(err);
+  });
+});
 router.get('/edit/:userId', auth.owner, (req, res, next) => {
   User.findOne({'_id': req.params.userId})
   .populate({
