@@ -56,18 +56,21 @@ router.get('/', auth.loggedIn, (req, res, next) => {
 });
 router.get('/login', (req, res, next) => {
   res.render('login', {
+    viewer: '',
     title: 'Connexion',
     message: req.flash('loginMessage')
   });
 });
 router.get('/signup', (req, res, next) => {
   res.render('signup', {
+    viewer: '',
     title: 'Inscription',
     message: req.flash('signupMessage')
   });
 });
 router.get('/reset', (req, res, next) => {
   res.render('reset', {
+    viewer: '',
     title: 'Réinitialisation du mot de passe',
     message: req.flash('resetMessage')
   });

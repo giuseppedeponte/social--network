@@ -30,6 +30,7 @@ require('./config/passport')(passport);
 const index = require('./routes/index');
 const user = require('./routes/user');
 const blog = require('./routes/blog');
+const inbox = require('./routes/inbox');
 
 const app = express();
 const server = require('http').Server(app);
@@ -70,6 +71,7 @@ app.use(function(req, res, next) {
 app.use('/', index);
 app.use('/user', user);
 app.use('/blog', blog);
+app.use('/inbox', inbox);
 
 
 // catch 404 and forward to error handler

@@ -8,6 +8,7 @@ router.get('/', function(req, res, next) {
   res.render('index', {
     title: 'Social Network',
     user: req.user || null,
+    viewer: req.user || null,
     flashMessage: req.flash('flashMessage')
   });
 });
