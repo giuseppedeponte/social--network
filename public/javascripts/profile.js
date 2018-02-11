@@ -103,10 +103,11 @@ $(function() {
   // REMOVE FRIEND
   var removeFriend = function(e) {
     var personId = $(this).parent('a').attr('href').split('/')[2];
+    var ownerId = window.location.pathname.split('/').pop();
     if (personId === ownUserId) {
       return;
     }
-    socket.emit('removeFriend', personId);
+    socket.emit('removeFriend', personId, ownerId);
   };
   $('.removeFriend').on('click', removeFriend);
   socket.on('removeFriend', function(friendId) {

@@ -38,41 +38,18 @@
           button.btn.btn-sm.confirmFriend.btn-success(title="En attente de confirmation")
             i.fa.fa-fw.fa-check
     each friend in user.friends
-      if (viewer.friendRequests.sent.indexOf(friend._id) > -1)
-        a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-secondary.d-flex.justify-content-between.align-items-center
+      a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
+        span
+          - var fAvatar = friend.profile.image || 'https://api.adorable.io/avatars/30/' + friend._id
+          img.img-fluid(src=fAvatar width="30" height="30")
           span
-            - var fAvatar = friend.profile.image || 'https://api.adorable.io/avatars/30/' + friend._id
-            img.img-fluid(src=fAvatar width="30" height="30")
-            span
-              | &emsp;
-              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
-              | &ensp;#{friend.name || friend.email}
-          button.btn.btn-sm(disabled="disabled", title="Invitation en cours")
-            i.fa.fa-fw.fa-cog.fa-spin
-      else if (viewer.friendRequests.received.indexOf(friend._id) > -1) 
-        a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.list-group-item-warning.d-flex.justify-content-between.align-items-center
-          span
-            - var fAvatar = friend.profile.image || 'https://api.adorable.io/avatars/30/' + friend._id
-            img.img-fluid(src=fAvatar width="30" height="30")
-            span
-              | &emsp;
-              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
-              | &ensp;#{friend.name || friend.email}
-          button.btn.btn-sm.confirmFriend.btn-success(title="En attente de confirmation")
-            i.fa.fa-fw.fa-check
-      else
-        a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
-          span
-            - var fAvatar = friend.profile.image || 'https://api.adorable.io/avatars/30/' + friend._id
-            img.img-fluid(src=fAvatar width="30" height="30")
-            span
-              | &emsp;
-              small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
-              | &ensp;#{friend.name || friend.email}
-          if (viewer.role === 'admin' || friend.role === 'admin')
-          else if (friend.role !== 'admin' && (isOwner || viewer.friends.indexOf(friend._id) >= 0))
-            button.btn.btn-sm.removeFriend.btn-danger(title="Supprimer de la liste d'amis")
-              i.fa.fa-fw.fa-minus
-          else if (!isOwner)
-            button.btn.btn-sm.btn-dark.addFriend(title="Envoyer une invitation")
-              i.fa.fa-fw.fa-plus
+            | &emsp;
+            small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
+            | &ensp;#{friend.name || friend.email}
+        if ((viewer.role === 'admin' && isOwner) || friend.role === 'admin')
+        else if (friend.role !== 'admin' && (isOwner || isAdmin))
+          button.btn.btn-sm.removeFriend.btn-danger(title="Supprimer de la liste d'amis")
+            i.fa.fa-fw.fa-minus
+        else if (!isOwner && viewer.friends.indexOf(friend._id) < 0 && viewer.friendRequests.sent.indexOf(friend._id) < 0 && viewer.friendRequests.received.indexOf(friend._id) < 0)
+          button.btn.btn-sm.btn-dark.addFriend(title="Envoyer une invitation")
+            i.fa.fa-fw.fa-plus

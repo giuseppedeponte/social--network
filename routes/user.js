@@ -144,6 +144,20 @@ router.post('/update/:userId', auth.owner, avatarUpload, (req, res, next) => {
     res.redirect('/user/edit/' + req.params.userId);
   });
 });
+router.get('/delete/:userId', auth.owner, (req, res, next) => {
+  if (req.user._id.equals(req.params.userId) || req.user.role === 'admin') {
+    User.remove({'_id': req.params.userId})
+    .then(() => {
+      req.logout();
+      req.flash('indexMessage', 'Le compte a été supprimé');
+      res.redirect('/');
+    })
+    .catch((e) => {
+      req.flash('profileMessage', 'Oops, le compte n\'a pas pu être supprimé');
+      res.redirect('/user/edit/' + req.params.userId);
+    });
+  }
+});
 router.get('/:userId', auth.friend, (req, res, next) => {
   res.io.once('connection', (socket) => {
     require('../websockets/profile').connect(res.io, socket, req.user);

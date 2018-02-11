@@ -231,26 +231,30 @@ module.exports.connect = (io, socket, user) => {
       console.log(err);
     });
   });
-  socket.on('removeFriend', (friendId) => {
-    console.log('removeFriend', friendId);
-    if (user._id.equals(friendId)) {
+  socket.on('removeFriend', (friendId, userId) => {
+    userId = userId && user.role === 'admin' ? userId : user._id;
+    console.log('removeFriend', userId, friendId);
+    if (userId === friendId) {
       return;
     }
     User.findOne({ '_id': friendId })
     .then((person) => {
       person.friends = person.friends.filter((f) => {
-        return !user._id.equals(f);
+        return !f.equals(userId);
       });
       return person.save();
     })
     .then(() => {
-      user.friends = user.friends.filter((f) => {
-        return !f.equals(friendId);
+      return User.findOne({ '_id': userId })
+      .then((usr) => {
+        usr.friends = usr.friends.filter((f) => {
+          return !f.equals(friendId);
+        });
+        return usr.save();
       });
-      return user.save();
     })
     .then(() => {
-      console.log('removed Friend', user._id, friendId);
+      console.log('removed Friend', userId, friendId);
       socket.emit('removeFriend', friendId);
     })
     .catch((err) => {
