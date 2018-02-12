@@ -6,7 +6,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
-
+const User = require('./models/User');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const passport = require('passport');
@@ -14,15 +14,19 @@ const flash = require('connect-flash');
 const session = require('express-session');
 
 const configDB = require('./config/database');
-mongoose.connect(configDB.url, configDB.options).then((db) => {
+const DBConnection = mongoose.connect(configDB.url, configDB.options)
+.then((db) => {
   console.log('Database connected');
-  require('./models/User').updateMany({}, { $set: { socket: '' }}, (err, result) => {
+  User.updateMany({}, { $set: { socket: '' }}, (err, result) => {
     if (err) {
       console.log(err);
     } else {
       console.log('resetting user socket', result);
     }
   });
+})
+.catch((err) => {
+  console.log('Unable to connect to Database');
 });
 
 require('./config/passport')(passport);

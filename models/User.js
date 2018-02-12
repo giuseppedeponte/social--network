@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const userRoles = ['guest', 'user', 'admin'];
 const Post = require('../models/Post');
+const Topic = require('../models/Topic');
 const Schema = mongoose.Schema;
 const userSchema = Schema({
   email: {
@@ -57,6 +58,10 @@ const userSchema = Schema({
   posts: [{
     type: Schema.Types.ObjectId,
     ref: 'Post'
+  }],
+  topics: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Topic'
   }],
   socket: {
     type: String,

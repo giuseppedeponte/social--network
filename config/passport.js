@@ -3,6 +3,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@social-network.fr';
+const emailer = require('./email');
 module.exports = (passport) => {
   passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -60,6 +61,11 @@ passport.use('local-signup',new LocalStrategy({
               console.log(err);
               throw err;
             }
+            emailer.send({
+              to: savedUser.email,
+              subject: 'Bienvenue sur Social Network',
+              text: 'Nous vous confirmons votre inscription sur the Social Network.'
+            });
             return done(null, savedUser);
           });
         });

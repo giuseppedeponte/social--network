@@ -28,6 +28,9 @@ const upload = multer({
 });
 const avatarUpload = (req, res, next) => {
   upload.single('avatar')(req, res, (err) => {
+    if (!req.file) {
+      return next();
+    }
     if (err) {
       req.flash('updateMessage', 'Oops, les modifications n\'ont pas pu être sauvegardées.');
       res.redirect('/user/edit/' + req.params.userId);

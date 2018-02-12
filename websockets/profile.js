@@ -1,4 +1,5 @@
 const querystring = require('querystring');
+const emailer = require('../config/email');
 const User = require('../models/User');
 const Post = require('../models/Post');
 const escapeRegExp = (str) => {
@@ -53,6 +54,13 @@ module.exports.connect = (io, socket, user) => {
             _id: user._id
           }
         });
+        if (!us._id.equals(user._id)) {
+          emailer.send({
+            to: us.email,
+            subject: 'Nouveau message | Social Network',
+            text: 'Un nouveau message a été publié sur votre profil. '
+          });
+        }
         socket.emit('createPost', {
           postId: us.posts[0]._id,
           html: post
@@ -183,6 +191,11 @@ module.exports.connect = (io, socket, user) => {
         throw new Error('friend request already received');
       }
       person.friendRequests.received.push(user._id);
+      emailer.send({
+        to: person.email,
+        subject: 'Demande de connexion reçue | Social Network',
+        text: 'Un utilisateur vous a invité a rejoindre son cercle d\'amis. Vous pouvez accepter ou refuser son invitation sur votre profil.'
+      });
       return person.save();
     })
     .then(() => {
