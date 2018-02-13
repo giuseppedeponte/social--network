@@ -1,16 +1,23 @@
 extends layout
 
 block content
-  .row
-    .col
-      #inbox.card.mx-auto.my-2.my-md-0
-        .card-body
-          h4.d-flex.justify-content-between.align-items-center
-            span Messages :
-            span#inboxCount.badge.badge-dark.px-3 10
-        ul.list-group.list-group-flush.text-left
-          li.list-group-item
-          li.list-group-item
-          li.list-group-item
-          li.list-group-item
+  pre= JSON.stringify(viewer.topics)
+  #accordion.mb-4
+    h2= title
+    hr
+    each topic in viewer.topics
+      .card
+        .card-header.bg-white#headingOne
+          h5.mb-0
+            button.btn.btn-block.btn-dark.text-left(data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
+              span Collapsible Group Item #1
+              span.badge.badge-dark.pull-right= new Date().toLocaleDateString()
+        #collapseOne.collapse.show(aria-labelledby="headingOne" data-parent="#accordion")
+          ul.list-group.list-group-flush
+            include inbox_message.pug
+            include inbox_message.pug
+            include inbox_message.pug
+
+block foot_amend
+  script(src="/javascripts/inbox.js")
             
