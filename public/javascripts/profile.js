@@ -189,7 +189,7 @@ $(function() {
         .attr('title', 'Refuser la demande')
         .on('click', refuseFriend)
         .find('i')
-        .addClass('fa-trash')
+        .addClass('fa-close')
         friendItem
         .find('.btn')
         .first()

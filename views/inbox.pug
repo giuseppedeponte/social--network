@@ -1,22 +1,28 @@
 extends layout
 
 block content
-  pre= JSON.stringify(viewer.topics)
   #accordion.mb-4
     h2= title
     hr
+    .text-center
+      include inbox_create
     each topic in viewer.topics
+      - var headId = "tHead" + topic._id
+      - var collId = "tColl" + topic._id
       .card
-        .card-header.bg-white#headingOne
+        .card-header.bg-white(id=headId)
           h5.mb-0
-            button.btn.btn-block.btn-dark.text-left(data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne")
-              span Collapsible Group Item #1
-              span.badge.badge-dark.pull-right= new Date().toLocaleDateString()
-        #collapseOne.collapse.show(aria-labelledby="headingOne" data-parent="#accordion")
+            button.btn.btn-block.btn-info.text-left(data-toggle="collapse" data-target="#" + collId aria-expanded="false" aria-controls=collId)
+              span= '# ' + topic.subject
+              span.badge.badge-info.pull-right= topic.date.toISOString().substr(0,10).split('-').reverse().join('/')
+              .d-flex.flex-row.flex-wrap.justify-content-start
+                each subscriber in topic.subscribers
+                  .pr-1
+                    small=subscriber.name
+        .collapse(id=collId aria-labelledby=topicId data-parent="#accordion")
           ul.list-group.list-group-flush
-            include inbox_message.pug
-            include inbox_message.pug
-            include inbox_message.pug
+            each message in topic.messages
+              include inbox_message.pug
 
 block foot_amend
   script(src="/javascripts/inbox.js")
