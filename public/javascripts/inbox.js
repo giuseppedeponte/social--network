@@ -1,4 +1,5 @@
 $(function() {
+  // Change font size depending on text length
   var $quote = $(".blockquote p");
   for (var i = 0; $quote[i]; i += 1) {
     var $numWords = $($quote[i]).text().split(" ").length;

@@ -1,25 +1,34 @@
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-dark m-2 px-4" data-toggle="modal" data-target="#inboxCreateModal">
+button.btn.btn-dark.m-2.px-4(type="button" data-toggle="modal" data-target="#inboxCreateModal")
   i.fa.fa-pencil
   span &nbsp;Créer un fil de discussion
-</button>
-<br/>
-
-<!-- Modal -->
-<div class="modal fade" id="inboxCreateModal" tabindex="-1" role="dialog" aria-labelledby="inboxCreateModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="inboxCreateModalLabel">Nouveau fil de discussion</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-dark">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+br
+  
+.modal.fade#inboxCreateModal(tabindex="-1" role="dialog" aria-labelledby="inboxCreateModalLabel" aria-hidden="true")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        h5.modal-title#inboxCreateModalLabel Nouveau fil de discussion
+        button.close(type="button" data-dismiss="modal" aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body
+        form
+          .form-group
+            label(for="topicSubject") Titre
+            input.form-control#topicSubject(type="text" name="topicSubject" required)
+          .form-group
+            label.control-label(for="topicSubscribers") Participants
+            div
+              select.form-control#topicSubscribers(name="topicSubscribers" multiple)
+                option(value="12345") Foo Bar
+                option(value="1234") Martin
+                option(value="123") Amandah
+                option(value="12") Giuseppe
+                option(value="1") Bar Foo
+          .form-group
+            label(for="topicMessage") Message
+            textarea.form-control#topicMessage(name="topicMessage" rows="4")
+      .modal-footer
+        button.btn.btn-sm.btn-dark(type="button") Envoyer
+      
+    
+  
