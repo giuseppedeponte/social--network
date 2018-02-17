@@ -1,34 +1,35 @@
-button.btn.btn-dark.m-2.px-4(type="button" data-toggle="modal" data-target="#inboxCreateModal")
+button.btn.btn-dark.m-2.mb-3.px-4(type="button" data-toggle="modal" data-target="#inboxCreateModal")
   i.fa.fa-pencil
   span &nbsp;Créer un fil de discussion
 br
   
 .modal.fade#inboxCreateModal(tabindex="-1" role="dialog" aria-labelledby="inboxCreateModalLabel" aria-hidden="true")
   .modal-dialog(role="document")
-    .modal-content
+    form(method="POST" action="/inbox/create/" + viewer._id).modal-content
       .modal-header
         h5.modal-title#inboxCreateModalLabel Nouveau fil de discussion
         button.close(type="button" data-dismiss="modal" aria-label="Close")
           span(aria-hidden="true") &times;
       .modal-body
-        form
-          .form-group
-            label(for="topicSubject") Titre
-            input.form-control#topicSubject(type="text" name="topicSubject" required)
-          .form-group
-            label.control-label(for="topicSubscribers") Participants
-            div
-              select.form-control#topicSubscribers(name="topicSubscribers" multiple)
-                option(value="12345") Foo Bar
-                option(value="1234") Martin
-                option(value="123") Amandah
-                option(value="12") Giuseppe
-                option(value="1") Bar Foo
-          .form-group
-            label(for="topicMessage") Message
-            textarea.form-control#topicMessage(name="topicMessage" rows="4")
+        if (message.length)
+          .alert.alert-warning(role="alert")
+            strong= message
+          hr
+        .form-group
+          label(for="topicSubject") Titre
+          input.form-control#topicSubject(type="text" name="topicSubject")
+        .form-group
+          label.control-label(for="topicSubscribers") Participants
+          div
+            select.form-control#topicSubscribers(name="topicSubscribers" multiple)
+              each friend in viewer.friends
+                if friend.role !== 'admin'
+                  option(value=friend._id)= friend.name || friend.email
+        .form-group
+          label(for="topicMessage") Message
+          textarea.form-control#topicMessage(name="topicMessage" rows="4")
       .modal-footer
-        button.btn.btn-sm.btn-dark(type="button") Envoyer
+        button.btn.btn-sm.btn-dark(type="submit") Envoyer
       
     
   

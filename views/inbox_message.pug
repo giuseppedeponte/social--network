@@ -1,5 +1,9 @@
 li.list-group-item.px-4
-  small.d-block.text-right.mb-2= message.date.toISOString().substr(0,10).split('-').reverse().join('/')
+  small.d-block.mb-2= message.date.toISOString().substr(0,10).split('-').reverse().join('/')
   blockquote.blockquote
-    p.mb-0=message.text
-    author.blockquote-footer.text-right=message.author.name
+    .d-flex.justify-content-between.align-items-center.my-2
+      p.mb-0.mr-4=message.text
+      if (viewer.role === 'admin' || message.author === viewer.name || message.author === viewer.email)
+        a.btn.btn-sm.btn-dark(role="button" href="/inbox/delete/" + viewer._id + '/' + topic._id + '?messageDate=' + message.date.valueOf())
+          span.fa.fa-trash
+    author.blockquote-footer=message.author
