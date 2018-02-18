@@ -221,6 +221,7 @@ router.get('/:userId', auth.friend, (req, res, next) => {
   .populate('friendRequests.received')
   .exec()
   .then((user) => {
+    console.log(user);
     res.render('profile', {
       title: 'Profile',
       user: user,

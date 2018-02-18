@@ -301,11 +301,64 @@ module.exports.connect = (io, socket, user) => {
       console.log(err);
     });
   });
+  socket.on('shareFriend', (friendA, friendB, userId) => {
+    if (user.role === 'admin' || user._id.equals(userId)) {
+      User.findOne({ '_id': friendA })
+      .then((a) => {
+        let newRequest = true;
+        a.friends.map((friend) => {
+          if (friend.equals(friendB)) {
+            newRequest = false;
+          }
+        });
+        a.friendRequests.sent.map((request) => {
+          if (request.equals(friendB)) {
+            newRequest = false;
+          }
+        });
+        a.friendRequests.received.map((request) => {
+          if (request.equals(friendB)) {
+            newRequest = false;
+          }
+        });
+        if (newRequest) {
+          a.friendRequests.sent.push(friendB);
+          emailer.send({
+            to: a.email,
+            subject: 'Recommandation | Social Network',
+            text: 'Vous avez reçu une nouvelle recommandation pour votre liste d\'amis.'
+          });
+          return a.save();
+        } else {
+          throw new Error('Already shared or friend');
+        }
+      })
+      .then(() => {
+        return User.findOne({ '_id': friendB });
+      })
+      .then((b) => {
+        b.friendRequests.received.push(friendA);
+        emailer.send({
+          to: b.email,
+          subject: 'Recommandation | Social Network',
+          text: 'Vous avez reçu une nouvelle recommandation pour votre liste d\'amis.'
+        });
+        return b.save();
+      })
+      .then(() => {
+        socket.emit('shareFriend');
+      })
+      .catch((e) => {
+        console.log(e.message);
+      })
+    }
+  });
   // reset friend requests
   // User.find({}).then((users) => {
   //   users.map((u) => {
   //     u.friendRequests.sent = [];
   //     u.friendRequests.received = [];
+  //     u.friendRequests.shared = [];
   //     u.save();
   //   });
   // })

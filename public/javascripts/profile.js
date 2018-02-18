@@ -92,12 +92,40 @@ $(function() {
   $('.confirmFriend').on('click', confirmFriend);
   socket.on('confirmFriend', function(friendId) {
     $('.friendA[href="/user/' + friendId + '"] .refuseFriend').remove();
-    $('.friendA[href="/user/' + friendId + '"] .btn')
+    var friendItem = $('.friendA[href="/user/' + friendId + '"]');
+    friendItem
+    .find('.btn')
+    .first()
+    .clone()
+    .appendTo(friendItem.find('.btn-group'))
+    .addClass('shareFriend btn-warning')
+    .attr('title', 'Envoyer une recommandation d\'ajout à la liste d\'amis')
+    .off('click', confirmFriend)
+    .on('click', shareFriend)
+    .find('i')
+    .addClass('fa-share');
+    friendItem
+    .find('.btn')
+    .first()
+    .clone()
+    .appendTo(friendItem.find('.btn-group'))
     .addClass('removeFriend btn-danger')
     .attr('title', 'Supprimer de la liste d\'amis')
+    .off('click', confirmFriend)
     .on('click', removeFriend)
     .children('.btn i')
     .addClass('fa-minus');
+    friendItem
+    .find('.btn')
+    .first()
+    .removeClass('confirmFriend btn-success')
+    .addClass('chatRequest btn-info')
+    .attr('title', 'Inviter à rejoindre une conversation instantanée')
+    .off('click', confirmFriend)
+    .on('click', chatRequest)
+    .find('i')
+    .addClass('fa-commenting');
+
     $('.friendA[href="/user/' + friendId + '"]')
       .removeClass('list-group-item-warning');
   });
@@ -126,6 +154,32 @@ $(function() {
   socket.on('removeFriend', function(friendId) {
     $('.friendA[href="/user/' + friendId + '"]').remove();
   });
+  var sendFriendRecommandation = function(e) {
+    e.preventDefault();
+    var friendA = $(e.target).attr('data-friend');
+    var friendB = $(e.target).attr('href').split('/').pop();
+    socket.emit('shareFriend', friendA, friendB, ownUserId);
+  };
+  socket.on('shareFriend', function(data) {
+    console.log(data);
+  });
+  var shareFriend = function(e) {
+    var personId = $(this).parents('a').attr('href').split('/')[2];
+    $('#shareFriendModal #shareFriendWith a')
+    .show()
+    .attr('data-friend', personId);
+    $('#shareFriendModal #shareFriendWith a[href="/share/' + personId + '"]')
+    .hide();
+    $('#shareFriendModal').modal('show');
+    console.log($('#shareFriendModal'));
+  };
+  $('.shareFriend').on('click', shareFriend);
+  $('#shareFriendWith a').on('click', sendFriendRecommandation);
+  var addShareDropdown = function(element) {
+
+  };
+  var chatRequest = function(e) {};
+  $('.chatRequest').on('click', chatRequest);
   // FRIEND SEARCH
   $('#friendSearchInfo small a').click(function(e) {
     e.preventDefault();
@@ -169,11 +223,35 @@ $(function() {
         if (u.role !== 'admin' && u.relation !== 'admin') {
           friendItem
           .find('.btn')
+          .first()
+          .clone()
+          .appendTo(friendItem.find('.btn-group'))
+          .addClass('shareFriend btn-warning')
+          .attr('title', 'Envoyer une recommandation d\'ajout à la liste d\'amis')
+          .off('click', confirmFriend)
+          .on('click', shareFriend)
+          .find('i')
+          .addClass('fa-share');
+          friendItem
+          .find('.btn')
+          .first()
+          .clone()
+          .appendTo(friendItem.find('.btn-group'))
           .addClass('removeFriend btn-danger')
           .attr('title', 'Supprimer de la liste d\'amis')
+          .off('click', confirmFriend)
           .on('click', removeFriend)
-          .find('i')
+          .children('.btn i')
           .addClass('fa-minus');
+          friendItem
+          .find('.btn')
+          .first()
+          .addClass('chatRequest btn-info')
+          .attr('title', 'Inviter à rejoindre une conversation instantanée')
+          .off('click', confirmFriend)
+          .on('click', chatRequest)
+          .find('i')
+          .addClass('fa-commenting');
         } else {
           friendItem
           .find('.btn')
