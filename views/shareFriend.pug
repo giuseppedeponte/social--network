@@ -6,7 +6,7 @@
         button.close(type="button" data-dismiss="modal" aria-label="Close")
           span(aria-hidden="true") &times;
       .modal-body
-        p.alert.alert-info.d-none#shareMessage Envoyé!
+        p.alert.alert-info#shareMessage Envoyé!
         #shareFriendWith.list-group
           each friend in user.friends
             if (friend.role !== 'admin')

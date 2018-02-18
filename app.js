@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
 const User = require('./models/User');
+const Conversation = require('./models/Conversation');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const passport = require('passport');
@@ -17,13 +18,13 @@ const configDB = require('./config/database');
 const DBConnection = mongoose.connect(configDB.url, configDB.options)
 .then((db) => {
   console.log('Database connected');
-  User.updateMany({}, { $set: { socket: '' }}, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('resetting user socket', result);
-    }
-  });
+  return User.updateMany({}, { $set: { socket: '' }});
+})
+.then(() => {
+  return Conversation.remove({});
+})
+.then(() => {
+  console.log('Database cleaned up.');
 })
 .catch((err) => {
   console.log('Unable to connect to Database');

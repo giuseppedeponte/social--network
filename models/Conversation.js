@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const conversationSchema = Schema({
+  date: Date,
   caller: {
     type: Schema.Types.ObjectId,
     ref: 'User'
@@ -15,9 +16,9 @@ const conversationSchema = Schema({
     default: 'waiting'
   },
   messages: [{
+    personId: String,
     person: String,
     text: String
-  }],
-  socket: Object
+  }]
 });
 module.exports = mongoose.model('Conversation', conversationSchema);

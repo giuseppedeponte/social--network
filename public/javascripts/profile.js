@@ -163,19 +163,18 @@ $(function() {
     socket.emit('shareFriend', friendA, friendB, ownUserId);
   };
   socket.on('shareFriend', function(data) {
-    console.log(data);
-    $('#shareMessage').removeClass('d-none');
+    $('#shareMessage').show();
   });
+  $('#shareMessage').hide();
   var shareFriend = function(e) {
     var personId = $(this).parents('a').attr('href').split('/')[2];
-    $('#shareMessage').addClass('d-none');
+    $('#shareMessage').hide();
     $('#shareFriendModal #shareFriendWith a')
     .show()
     .attr('data-friend', personId);
     $('#shareFriendModal #shareFriendWith a[href="/share/' + personId + '"]')
     .hide();
     $('#shareFriendModal').modal('show');
-    console.log($('#shareFriendModal'));
   };
   $('.shareFriend').on('click', shareFriend);
   $('#shareFriendWith a').on('click', sendFriendRecommandation);
@@ -202,7 +201,6 @@ $(function() {
     socket.emit('friendSearch', q);
   });
   socket.on('friendSearch', function(users) {
-    console.log(users);
     $('.friendSearchItem').remove();
     $('.friendItem').removeClass('d-flex').addClass('d-none');
     var u = null;

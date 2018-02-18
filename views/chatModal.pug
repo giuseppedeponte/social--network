@@ -1,31 +1,29 @@
-.modal#chatModal(tabindex="-1" role="dialog" aria-labelledby="chatLabel" aria-hidden="true")
+.modal#chatModal(tabindex="-1" role="dialog" aria-labelledby="chatLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false")
   .modal-dialog(role="document")
     .modal-content
       .modal-header
-        h5#chatLabel.modal-title Conversation instantanée
+        h5#chatLabel.modal-title Conversation instantanée&nbsp;
         button.close(type="button" data-dismiss="modal" aria-label="Close")
           span(aria-hidden="true") &times;
       .modal-body
-        p#chatAlert.alert.alert-info En attente de réponse....
-        hr
+        p#chatAlert.alert.alert-warning En attente de réponse....
         form#chatForm
           .input-group
             label.sr-only(for="chatMessage") Friend search
             input.form-control(type="text",
                   name="chatMessage",
                   id="chatMessage"
+                  autocomplete="off"
                   placeholder="Envoyer un message...")
             span.input-group-btn
-              button.btn.btn-dark(type="submit")
+              button.btn.btn-info(type="submit")
                 i.fa.fa-send
-        hr
-        #chatMessages
-          .alert.alert-light.chatMessage qdsdqsdqdfqsd
-          .alert.alert-light qdsdqsdqdfqsd
-          .alert.alert-light qdsdqsdqdfqsd
-          .alert.alert-light qdsdqsdqdfqsd
-          .alert.alert-light qdsdqsdqdfqsd
-        hr
-      .modal-footer
-        button#acceptCall.btn.btn-info Démarrer la conversation
-        button#refuseCall.btn.btn-danger Réfuser la conversation
+          small#typeSpy.form-text.text-muted.ml-2 &nbsp;
+          hr
+        #chatMessages.mt-2
+          p.chatMessage.m-2.p-1.alert
+            span
+      .modal-footer.text-center
+        small#chatFriend.text-center
+        button#acceptCall.btn.btn-info Accepter
+        button#refuseCall.btn.btn-danger Réfuser

@@ -2,6 +2,7 @@ const querystring = require('querystring');
 const emailer = require('../config/email');
 const User = require('../models/User');
 const Post = require('../models/Post');
+const Conversation = require('../models/Conversation');
 const escapeRegExp = (str) => {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 };
@@ -23,13 +24,12 @@ module.exports.connect = (io, socket, user) => {
   socket.on('disconnect', (reason) => {
     socket.disconnect(true);
     user.updateSocket()
-        .then(() => {
-          console.log(user._id + ' is now disconnected');
-          console.log(user);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      .then(() => {
+        console.log(user._id + ' is now disconnected');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
   // Create a post
   socket.on('createPost', (query) => {
@@ -206,7 +206,6 @@ module.exports.connect = (io, socket, user) => {
       return user.save();
     })
     .then(() => {
-      console.log('added Friend', user._id, friendId);
       socket.emit('addFriend', friendId);
     })
     .catch((err) => {
@@ -215,7 +214,6 @@ module.exports.connect = (io, socket, user) => {
   });
   // Accept Friend Request
   socket.on('confirmFriend', (friendId) => {
-    console.log('confirmFriend', friendId);
     if (user._id.equals(friendId)) {
       return;
     }
@@ -225,7 +223,6 @@ module.exports.connect = (io, socket, user) => {
         return !user._id.equals(req);
       });
       person.friends.push(user._id);
-      console.log(person);
       return person.save();
     })
     .then(() => {
@@ -233,11 +230,9 @@ module.exports.connect = (io, socket, user) => {
         return !req.equals(friendId);
       });
       user.friends.push(friendId);
-      console.log(user);
       return user.save();
     })
     .then(() => {
-      console.log('added Friend', user._id, friendId);
       socket.emit('confirmFriend', friendId);
     })
     .catch((err) => {
@@ -246,7 +241,6 @@ module.exports.connect = (io, socket, user) => {
   });
   // Refuse Friend Request
   socket.on('refuseFriend', (friendId) => {
-    console.log('refuseFriend', friendId);
     if (user._id.equals(friendId)) {
       return;
     }
@@ -264,7 +258,6 @@ module.exports.connect = (io, socket, user) => {
       return user.save();
     })
     .then(() => {
-      console.log('friend request refused', user._id, friendId);
       socket.emit('refuseFriend', friendId);
     })
     .catch((err) => {
@@ -273,7 +266,6 @@ module.exports.connect = (io, socket, user) => {
   });
   socket.on('removeFriend', (friendId, userId) => {
     userId = userId && user.role === 'admin' ? userId : user._id;
-    console.log('removeFriend', userId, friendId);
     if (userId === friendId) {
       return;
     }
@@ -294,7 +286,6 @@ module.exports.connect = (io, socket, user) => {
       });
     })
     .then(() => {
-      console.log('removed Friend', userId, friendId);
       socket.emit('removeFriend', friendId);
     })
     .catch((err) => {
@@ -349,6 +340,7 @@ module.exports.connect = (io, socket, user) => {
         socket.emit('shareFriend');
       })
       .catch((e) => {
+        socket.emit('shareFriend');
         console.log(e.message);
       })
     }
@@ -364,13 +356,30 @@ module.exports.connect = (io, socket, user) => {
   // })
 
   // CHAT
+  const callData = (conversation) => {
+    return {
+      _id: conversation.id || '',
+      caller: {
+        _id: conversation.caller._id,
+        name: conversation.caller.name || conversation.caller.email,
+        socket: conversation.caller.socket
+      },
+      callee: {
+        _id: conversation.callee._id,
+        name: conversation.callee.name || conversation.callee.email,
+        socket: conversation.callee.socket
+      },
+      status: conversation.status,
+      messages: conversation.messages
+    };
+  };
   socket.on('outgoingCall', (call) => {
-    User.findOne({'_id': call.callee})
+    User.findOne({'_id': call.callee._id || call.callee})
     .then((u) => {
       if (u.socket) {
         call.callee = u;
         call.caller = user;
-        io.to(u.socket).emit('incomingCall', call);
+        io.to(u.socket).emit('incomingCall', callData(call));
       }
     })
     .catch((e) => {
@@ -378,11 +387,29 @@ module.exports.connect = (io, socket, user) => {
     })
   });
   socket.on('callAccepted', (call) => {
-
+    let conversation = null;
+    User.findOne({'_id': call.caller._id || call.caller })
+    .then((caller) => {
+      conversation = new Conversation({
+        date: new Date(),
+        caller: caller,
+        callee: user,
+        status: 'ongoing',
+        messages: []
+      });
+      return conversation.save();
+    })
+    .then(() => {
+      io.to(conversation.caller.socket).emit('callStart', callData(conversation));
+      io.to(conversation.callee.socket).emit('callStart', callData(conversation));
+    })
+    .catch((e) => {
+      console.log(e);
+      socket.emit('hangUp');
+    });
   });
   socket.on('callRefused', (call) => {
-    console.log('callRefused');
-    User.findOne({'_id': call.caller})
+    User.findOne({'_id': call.caller._id || call.caller })
     .then((u) => {
       if (u.socket) {
         io.to(u.socket).emit('callRefused', call);
@@ -392,11 +419,48 @@ module.exports.connect = (io, socket, user) => {
       socket.emit('hangUp');
     });
   });
-  socket.on('incomingMessage', (message) => {
-
+  socket.on('typing', (conversation) => {
+    let username = user.name || user.email;
+    let sendTo = user._id.equals(conversation.caller._id) ? conversation.callee.socket : conversation.caller.socket;
+    io.to(sendTo).emit('typing', username);
+  });
+  socket.on('incomingMessage', (data) => {
+    Conversation.findOne({'_id': data.conversation._id})
+    .populate('caller')
+    .populate('callee')
+    .then((call) => {
+      data.conversation = call;
+      call.messages.unshift({
+        personId: user._id,
+        person: user.name || user.email,
+        text: data.message
+      });
+      return call.save();
+    })
+    .then(() => {
+      io.to(data.conversation.caller.socket).emit('incomingMessage', callData(data.conversation));
+      io.to(data.conversation.callee.socket).emit('incomingMessage', callData(data.conversation));
+    })
+    .catch((e) => {
+      console.log(e);
+      if (data.conversation.caller) {
+        io.to(data.conversation.caller.socket).emit('hangUp');
+        io.to(data.conversation.callee.socket).emit('hangUp');
+      } else {
+        socket.emit('hangUp');
+      }
+    });
   });
   socket.on('hangUp', (call) => {
-    io.to(call.caller.socket).emit('hangUp');
-    io.to(call.callee.socket).emit('hangUp');
+    if (call && call._id) {
+      Conversation.remove({'_id': call._id})
+      .then(() => {
+        io.to(call.caller.socket).emit('hangUp');
+        io.to(call.callee.socket).emit('hangUp');
+      });
+    } else {
+      io.to(call.caller.socket).emit('hangUp');
+      io.to(call.callee.socket).emit('hangUp');
+    }
   });
 };
