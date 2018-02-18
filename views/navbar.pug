@@ -1,4 +1,4 @@
-nav.navbar.navbar-expand-lg.navbar-light.bg-light
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
   a.navbar-brand(href="/") Social Network
   button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
     span.fa.fa-bars
@@ -16,8 +16,6 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light
           a.nav-link(href="/user/" + viewer._id) Profile
         li.nav-item
           a.nav-link(href="/inbox/" + viewer._id) Messagerie      
-        li.nav-item
-          a.nav-link(href="/chat/" + viewer._id) Chat
         li.nav-item
           a.nav-link(href="/user/logout") Déconnexion
         

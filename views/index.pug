@@ -8,8 +8,21 @@ block content
         .alert.alert-warning(role="alert")
           strong= flashMessage
       hr
-    .col-sm-12
-      .btn-group.btn-group-lg.btn-group-vertical
+    .col-sm-6.text-center.mb-4
+      img.img-fluid.img-thumbnail.mw-50(src="http://www.ufunk.net/wp-content/uploads/2017/10/social-network-tarots-4.jpg" alt="Social Network Tarots")
+    .col-sm-6.text-center.mt-4
+      if (stats)
+        .alert.alert-info.py-1.mb-4
+          strong #{stats.users} utilisateur(s) inscrit(s)
+        .alert.alert-info.py-1.mb-4
+          strong #{stats.connections === 0 ? 1 : stats.connections} utilisateur(s) connecté(s)
+        .alert.alert-info.py-1.mb-4
+          strong #{stats.posts} message(s) publié(s)
+        .alert.alert-info.py-1.mb-4
+          strong #{stats.topics} fil(s) de discussion privé(s)
+        .alert.alert-info.py-1.mb-4
+          strong #{stats.chats} conversation(s) en temps réel
+      .btn-group.mb-2
         if (user)
           a.btn.btn-light(href="/user/")
             span.fa.fa-fw.fa-user
@@ -24,9 +37,20 @@ block content
           a.btn.btn-warning(href="/user/signup")
             span.fa.fa-fw.fa-handshake-o
             | &nbsp;Inscription
-    .col-sm-12
-      hr
-      a.btn(href="/user/signup")
-        span.fa.fa-question-circle
-        | &nbsp;À propos
+      .col-sm-12.mb-4
+        a.btn.btn-link(href="#about" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="about")
+          span.fa.fa-question-circle
+          | &nbsp;À propos
+        br
+        <div class="collapse" id="about">
+          <div class="card card-body">
+            strong Social Network          
+            span est un site web développé en 2018 par Giuseppe De Ponte dans le cadre de la formation 
+            em &nbsp;Développeur intégrateur Web Javascript Fullstack
+            span .
+            span Le code source de ce site et des autres sites développés pendante cette formation sont disponibles sur  
+            a(href="http://github.com/giuseppedeponte") GitHub
+            span .
+          </div>
+        </div>
             
