@@ -362,4 +362,41 @@ module.exports.connect = (io, socket, user) => {
   //     u.save();
   //   });
   // })
+
+  // CHAT
+  socket.on('outgoingCall', (call) => {
+    User.findOne({'_id': call.callee})
+    .then((u) => {
+      if (u.socket) {
+        call.callee = u;
+        call.caller = user;
+        io.to(u.socket).emit('incomingCall', call);
+      }
+    })
+    .catch((e) => {
+      socket.emit('hangUp');
+    })
+  });
+  socket.on('callAccepted', (call) => {
+
+  });
+  socket.on('callRefused', (call) => {
+    console.log('callRefused');
+    User.findOne({'_id': call.caller})
+    .then((u) => {
+      if (u.socket) {
+        io.to(u.socket).emit('callRefused', call);
+      }
+    })
+    .catch((e) => {
+      socket.emit('hangUp');
+    });
+  });
+  socket.on('incomingMessage', (message) => {
+
+  });
+  socket.on('hangUp', (call) => {
+    io.to(call.caller.socket).emit('hangUp');
+    io.to(call.callee.socket).emit('hangUp');
+  });
 };

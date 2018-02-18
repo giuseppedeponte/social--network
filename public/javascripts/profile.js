@@ -91,6 +91,7 @@ $(function() {
   };
   $('.confirmFriend').on('click', confirmFriend);
   socket.on('confirmFriend', function(friendId) {
+    $('#friendCount').text(parseInt($('#friendCount').text()) + 1);
     $('.friendA[href="/user/' + friendId + '"] .refuseFriend').remove();
     var friendItem = $('.friendA[href="/user/' + friendId + '"]');
     friendItem
@@ -152,6 +153,7 @@ $(function() {
   };
   $('.removeFriend').on('click', removeFriend);
   socket.on('removeFriend', function(friendId) {
+    $('#friendCount').text(parseInt($('#friendCount').text()) - 1);
     $('.friendA[href="/user/' + friendId + '"]').remove();
   });
   var sendFriendRecommandation = function(e) {
@@ -162,9 +164,11 @@ $(function() {
   };
   socket.on('shareFriend', function(data) {
     console.log(data);
+    $('#shareMessage').removeClass('d-none');
   });
   var shareFriend = function(e) {
     var personId = $(this).parents('a').attr('href').split('/')[2];
+    $('#shareMessage').addClass('d-none');
     $('#shareFriendModal #shareFriendWith a')
     .show()
     .attr('data-friend', personId);
@@ -175,10 +179,6 @@ $(function() {
   };
   $('.shareFriend').on('click', shareFriend);
   $('#shareFriendWith a').on('click', sendFriendRecommandation);
-  var addShareDropdown = function(element) {
-
-  };
-  var chatRequest = function(e) {};
   $('.chatRequest').on('click', chatRequest);
   // FRIEND SEARCH
   $('#friendSearchInfo small a').click(function(e) {

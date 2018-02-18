@@ -53,8 +53,10 @@ block content
       include ./profileWall.pug
     .col-12
       include ./friends.pug
-    
+    if (isOwner) 
+      include ./chatModal.pug
 block foot_amend
   script(src="/socket.io/socket.io.js")
   script(src="/javascripts/profile.js")
+  script(src="/javascripts/chat.js")
     
