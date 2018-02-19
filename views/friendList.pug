@@ -34,8 +34,9 @@ each friend in user.friends
         | &emsp;
         small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
         | &ensp;#{friend.name || friend.email}
-    if ((viewer.role === 'admin' && isOwner) || friend.role === 'admin')
-    else if (friend.role !== 'admin' && (isOwner || isAdmin))
+    if (viewer.role === 'admin' && isOwner)
+    else if (friend.role === 'admin')
+    else if (isOwner || isAdmin)
       .btn-group
         button.btn.btn-sm.chatRequest.btn-info(title="Inviter à rejoindre une conversation instantanée")
           i.fa.fa-fw.fa-commenting

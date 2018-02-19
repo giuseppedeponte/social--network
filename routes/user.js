@@ -157,29 +157,40 @@ router.post('/update/:userId', auth.owner, avatarUpload, (req, res, next) => {
     if (!user) {
       throw new Error('Not Found');
     }
-    req.user.name = req.body.name.trim()
-                    || req.user.name;
-    req.user.email = req.body.email.trim().toLowerCase()
-                     || req.user.email;
-    req.user.info.firstName = req.body.firstName.trim()
-                              || req.user.info.firstName;
-    req.user.info.lastName = req.body.lastName.trim()
-                     || req.user.info.lastName;
-    req.user.info.gender = req.body.gender.trim().toLowerCase()
-                     || req.user.info.gender;
-    req.user.info.address.street = req.body.street.trim()
-                     || req.user.info.address.street;
-    req.user.info.address.zipCode = req.body.zipCode.trim()
-                     || req.user.info.address.zipCode;
-    req.user.info.address.city = req.body.city.trim()
-                     || req.user.info.address.city;
-    req.user.info.address.state = req.body.state.trim()
-                     || req.user.info.address.state;
-    req.user.profile.image = req.body.avatarUrl || req.user.profile.image;
-    req.user.profile.bio = req.body.bio.trim()
-                     || req.user.profile.bio;
-    req.user.profile.preferences = req.body.preferences.trim()
-                     || req.user.profile.preferences;
+    req.user.email = req.body.email.trim().toLowerCase() || req.user.email;
+    req.user.name = typeof req.body.name !== 'undefined'
+                    ? req.body.name.trim()
+                    : req.user.name;
+    req.user.info.firstName = typeof req.body.firstName !== 'undefined'
+                              ? req.body.firstName.trim()
+                              : req.user.info.firstName;
+    req.user.info.lastName = typeof req.body.lastName !== 'undefined'
+                              ? req.body.lastName.trim()
+                              : req.user.info.lastName;
+    req.user.info.gender = typeof req.body.gender !== 'undefined'
+                            ? req.body.gender.trim().toLowerCase()
+                            : req.user.info.gender;
+    req.user.info.address.street = typeof req.body.street !== 'undefined'
+                                    ? req.body.street.trim()
+                                    : req.user.info.address.street;
+    req.user.info.address.zipCode = typeof req.body.zipCode !== 'undefined'
+                                    ? req.body.zipCode.trim()
+                                    : req.user.info.address.zipCode;
+    req.user.info.address.city = typeof req.body.city !== 'undefined'
+                                  ? req.body.city.trim()
+                                  : req.user.info.address.city;
+    req.user.info.address.state = typeof req.body.state !== 'undefined'
+                                  ? req.body.state.trim()
+                                  : req.user.info.address.state;
+    req.user.profile.image = typeof req.body.avatarUrl !== 'undefined'
+                              ? req.body.avatarUrl
+                              : req.user.profile.image;
+    req.user.profile.bio = typeof req.body.bio !== 'undefined'
+                            ? req.body.bio.trim()
+                            : req.user.profile.bio;
+    req.user.profile.preferences = typeof req.body.preferences !== 'undefined'
+                                    ? req.body.preferences.trim()
+                                    : req.user.profile.preferences;
     req.user.save((err, user) => {
       if (err) {
         throw err;

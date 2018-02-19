@@ -9,18 +9,18 @@ block content
           strong= flashMessage
       hr
     .col-sm-6.text-center.mb-4
-      img.img-fluid.img-thumbnail.mw-50(src="http://www.ufunk.net/wp-content/uploads/2017/10/social-network-tarots-4.jpg" alt="Social Network Tarots")
+      img.img-fluid.img-thumbnail.mw-50(title="Credit: Jacopo Rosati" src="/images/social-network-tarots.jpg" alt="Social Network Tarots")
     .col-sm-6.text-center.mt-4
       if (stats)
-        .alert.alert-info.py-1.mb-4
+        .alert.alert-success.py-1.mb-4
           strong #{stats.users} utilisateur(s) inscrit(s)
-        .alert.alert-info.py-1.mb-4
+        .alert.alert-success.py-1.mb-4
           strong #{stats.connections === 0 ? 1 : stats.connections} utilisateur(s) connecté(s)
-        .alert.alert-info.py-1.mb-4
+        .alert.alert-success.py-1.mb-4
           strong #{stats.posts} message(s) publié(s)
-        .alert.alert-info.py-1.mb-4
+        .alert.alert-success.py-1.mb-4
           strong #{stats.topics} fil(s) de discussion privé(s)
-        .alert.alert-info.py-1.mb-4
+        .alert.alert-success.py-1.mb-4
           strong #{stats.chats} conversation(s) en temps réel
       .btn-group.mb-2
         if (user)
@@ -42,8 +42,8 @@ block content
           span.fa.fa-question-circle
           | &nbsp;À propos
         br
-        <div class="collapse" id="about">
-          <div class="card card-body">
+        #about.collapse
+          .card.card-body
             strong Social Network          
             span est un site web développé en 2018 par Giuseppe De Ponte dans le cadre de la formation 
             em &nbsp;Développeur intégrateur Web Javascript Fullstack
@@ -51,6 +51,6 @@ block content
             span Le code source de ce site et des autres sites développés pendante cette formation sont disponibles sur  
             a(href="http://github.com/giuseppedeponte") GitHub
             span .
-          </div>
-        </div>
+            .text-center
+              img.img-fluid.w-75(src="/images/narwhal.gif" alt="This narwhal loves you" title="Credit: Chibird")
             

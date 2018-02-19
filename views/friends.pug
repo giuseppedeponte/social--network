@@ -2,7 +2,7 @@
   .card-body
     h4.d-flex.justify-content-between.align-items-center
       span Amis 
-      span#friendCount.badge.badge-dark.px-3= user.friends.length
+      span(title="Nombre d'amis")#friendCount.badge.badge-dark.px-3= user.friends.length
   div.list-group.list-group-flush.text-left
     if (isOwner)
       .list-group-item.pt-4
@@ -16,5 +16,5 @@
           button.btn.btn-sm
             i.fa.fa-fw
     include friendList
-    if (user.role !== 'admin' && isOwner)
-      include shareFriend
+  if (isOwner || isAdmin)
+    include shareFriend

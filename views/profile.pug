@@ -12,24 +12,24 @@ block content
               i.fa.fa-fw.fa-hashtag
               | &ensp;#{user.id}
             if (user.role === 'admin')
-              span.fa.fa-fw.fa-2x.fa-user-secret
+              span(title="administrateur").fa.fa-fw.fa-2x.fa-user-secret.text-secondary
           if (user.name)
-            li.list-group-item
+            li.list-group-item(title="Nom d'utilisateur")
               span.fa.fa-fw.fa-male
               | &ensp;#{user.name}&ensp;
-          li.list-group-item
+          li.list-group-item(title="Adresse e-mail")
             span.fa.fa-fw.fa-envelope
             | &ensp;#{user.email}
           if (user.info.gender)
-            li.list-group-item
+            li.list-group-item(title="Genre")
               span.fa.fa-fw.fa-venus-mars
               | &ensp;#{user.info.gender}
           if (user.info.firstName && user.info.lastName)        
-            li.list-group-item
+            li.list-group-item(title="Nom complet")
               span.fa.fa-fw.fa-address-card
               | &ensp;#{user.info.firstName} #{user.info.lastName}
           if (user.info.address.street && user.info.address.zipCode && user.info.address.city)
-            li.list-group-item
+            li.list-group-item(title="Adresse postale")
               span.fa.fa-fw.fa-map
               | &ensp;#{user.info.address.street}
               br 
@@ -37,11 +37,11 @@ block content
               if (user.info.address.state)
                 | &nbsp;#{user.info.address.state }
           if (user.profile.bio)
-            li.list-group-item
+            li.list-group-item(title="Biographie")
               span.fa.fa-fw.fa-child
               | &ensp;#{user.profile.bio}
           if (user.profile.preferences)
-            li.list-group-item
+            li.list-group-item(title="Préférences")
               span.fa.fa-fw.fa-star
               | &ensp;#{user.profile.preferences}
           if (isAdmin || isOwner)    
@@ -51,9 +51,11 @@ block content
                   | &nbsp;Modifier les informations
     .col-12.col-md-7
       include ./profileWall.pug
+      div.p-4.text-center
+        img.img-fluid.w-75(src="/images/profile_bunny.gif" title="Credit: Chibird" alt="You're allowed to be sad...")
     .col-12
       include ./friends.pug
-    if (isOwner) 
+    if (isOwner || isAdmin) 
       include ./chatModal.pug
 block foot_amend
   script(src="/socket.io/socket.io.js")
