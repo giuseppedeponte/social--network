@@ -52,7 +52,10 @@ block content
     .col-12.col-md-7
       include ./profileWall.pug
       div.p-4.text-center
-        img.img-fluid.w-75(src="/images/profile_bunny.gif" title="Credit: Chibird" alt="You're allowed to be sad...")
+        if (isAdmin)
+          img.img-fluid.w-75(src="/images/spy.gif" alt="You're allowed to be spied...")
+        else
+          img.img-fluid.w-75(src="/images/profile_bunny.gif" title="Credit: Chibird" alt="You're allowed to be sad...")
     .col-12
       include ./friends.pug
     if (isOwner || isAdmin) 
