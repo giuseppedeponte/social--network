@@ -11,7 +11,7 @@ if (isOwner)
       .btn-group
         button.btn.btn-sm.confirmFriend.btn-success(title="Ajouter à la liste d'amis")
           i.fa.fa-fw.fa-check
-        button.btn.btn-sm.refuseFriend.btn-dark(title="Réfuser la demande")
+        button.btn.btn-sm.refuseFriend.btn-dark(title="Refuser la demande")
           i.fa.fa-fw.fa-close
   each friend in user.friendRequests.sent
     a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-secondary.d-flex.justify-content-between.align-items-center
