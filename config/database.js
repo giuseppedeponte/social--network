@@ -1,6 +1,7 @@
 'use strict';
+const dbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/social-network';
 module.exports = {
-  url: 'mongodb://localhost:27017/social-network',
+  url: dbUri,
   options: {
     useMongoClient: true,
     socketTimeoutMS: 0,
