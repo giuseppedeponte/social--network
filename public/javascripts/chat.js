@@ -63,7 +63,7 @@ $(function() {
         message: message
       });
     }
-    $('#chatMessage').val('');
+    $('#chatMessage').val('').focus();
   });
   $('#chatMessage').on('keyup', function(e) {
     socket.emit('typing', CONVERSATION);
