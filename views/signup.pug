@@ -15,12 +15,14 @@ block content
           input#email.form-control(type="email"
                                    name="email"
                                    placeholder="Adresse email"
+                                   autocomplete="home email"
                                    required
                                    autofocus)
         .form-group.text-left
           label(for="password") Mot de passe *
           input#password.form-control(type="password"
                                       name="password"
+                                      autocomplete="new-password"
                                       placeholder="Mot de passe"
                                       required)
         .form-group.text-left
@@ -28,6 +30,7 @@ block content
           input#passwordRepeat.form-control(type="password"
                                       name="passwordRepeat"
                                       placeholder="Mot de passe"
+                                      autocomplete="new-password"
                                       required)
         input.btn.btn-lg.btn-block.btn-dark(type="submit" value="Se connecter")
         .btn-group-vertical.btn-group-sm.mt-2
