@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  #accordion.mb-4
+  #accordion.mb-4(role="tablist")
     h2= title
     hr
     .text-center
@@ -13,18 +13,18 @@ block content
         .card-header.bg-white(id=headId)
           h5.mb-0
             - var colorClass = viewer._id.equals(topic.publisher) ? '-info' : '-light';
-            button.btn.btn-block.text-md-left(class='btn' + colorClass data-toggle="collapse" data-target="#" + collId aria-expanded="false" aria-controls=collId)
+            span.btn.btn-block.text-md-left(role="tab" class='btn' + colorClass data-toggle="collapse" data-target="#" + collId aria-expanded="false" aria-controls=collId)
               span.badge.float-md-right(class='badge' + colorClass)= topic.date.toISOString().substr(0,10).split('-').reverse().join('/')
               br.d-md-none
-              span= '# ' + topic.subject
-              hr.d-md-none
+              span= topic.subject
+              br.d-md-none
               span.d-flex.flex-row.flex-nowrap.justify-content-between.align-items-end.mt-2
                 span.d-flex.flex-row.flex-wrap.justify-content-md-start.justify-content-center
                   each subscriber in topic.subscribers
                     span.badge.badge-warning.m-1.p-1 #{subscriber.name || subscriber.email}
                 if (viewer.role === 'admin' || viewer._id.equals(topic.publisher))
                   a.btn.btn-sm.btn-dark(role="button" title="Supprimer la discussion" href="/inbox/delete/" + viewer._id + '/' + topic._id)
-                    span.fa.fa-trash
+                    span.fa.fa-fw.fa-trash
         .collapse(id=collId aria-labelledby=topicId data-parent="#accordion")
           ul.list-group.list-group-flush
             li.list-group-item.px-4
@@ -34,7 +34,7 @@ block content
                   .d-flex.justify-content-between.align-items-center
                     textarea.form-control.mb-2.mr-3(name="topicMessage" rows="2")
                     button.btn.btn-sm.btn-dark.ml-3(type="submit")
-                      span.fa.fa-send
+                      span.fa.fa-fw.fa-send
                 .blockquote-footer=viewer.name || viewer.email
             each message in topic.messages
               include inbox_message.pug
