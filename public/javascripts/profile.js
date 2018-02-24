@@ -70,7 +70,7 @@ $(function() {
     $('.friendA[href="/user/' + friendId + '"] .btn')
       .removeClass('btn-dark')
       .removeClass('addFriend')
-      .attr('disabled', 'disabled')
+      .addClass('disabled')
       .attr('title', 'Invitation en cours')
       .children(':first')
       .removeClass('fa-plus')
@@ -283,7 +283,7 @@ $(function() {
         friendItem
         .addClass('list-group-item-secondary')
         .find('.btn')
-        .attr('disabled', 'disabled')
+        .addClass('disabled')
         .attr('title', 'Invitation en cours')
         .find('i')
         .addClass('fa-cog fa-spin');
