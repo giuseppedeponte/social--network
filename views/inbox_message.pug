@@ -6,4 +6,4 @@ li.list-group-item.px-4
       if (viewer.role === 'admin' || message.author === viewer.name || message.author === viewer.email)
         a.btn.btn-sm.btn-dark(role="button" href="/inbox/delete/" + viewer._id + '/' + topic._id + '?messageDate=' + message.date.valueOf())
           span.fa.fa-trash
-    author.blockquote-footer=message.author
+    .blockquote-footer=message.author

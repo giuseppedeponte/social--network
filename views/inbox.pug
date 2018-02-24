@@ -17,8 +17,8 @@ block content
               span.badge.pull-right(class='badge' + colorClass)= topic.date.toISOString().substr(0,10).split('-').reverse().join('/')
               br.d-md-none
               span= '# ' + topic.subject
-              .d-flex.flex-row.flex-nowrap.justify-content-between.align-items-end.mt-2
-                .d-flex.flex-row.flex-wrap.justify-content-start
+              span.d-flex.flex-row.flex-nowrap.justify-content-between.align-items-end.mt-2
+                span.d-flex.flex-row.flex-wrap.justify-content-start
                   each subscriber in topic.subscribers
                     span.badge.badge-warning.m-1.p-1 #{subscriber.name || subscriber.email}
                 if (viewer.role === 'admin' || viewer._id.equals(topic.publisher))
@@ -34,7 +34,7 @@ block content
                     textarea.form-control.mb-2.mr-3(name="topicMessage" rows="2")
                     button.btn.btn-sm.btn-dark.ml-3(type="submit")
                       span.fa.fa-send
-                author.blockquote-footer=viewer.name || viewer.email
+                .blockquote-footer=viewer.name || viewer.email
             each message in topic.messages
               include inbox_message.pug
     .w-100.mt-4.text-center

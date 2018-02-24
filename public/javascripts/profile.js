@@ -1,3 +1,4 @@
+'use strict';
 var socket = io();
 var ownUserId = '';
 window.onbeforeunload = function() {
@@ -8,9 +9,8 @@ socket.on('Handshake++', function(data) {
   ownUserId = data;
   $('.friendA[href="/user/' + ownUserId + '"] .btn').remove();
   $('.friendA[href="/user/' + ownUserId + '"]')
-    .addClass('list-group-item-success');
+  .addClass('list-group-item-success');
 });
-
 $(function() {
   // BLOGGING
   $('#createPost').on('submit', function(e) {
@@ -28,14 +28,15 @@ $(function() {
     $('#postCarousel .carousel-inner').prepend(newPost);
     $('#postCount').text($('.carousel-item').length);
   });
-  $('#commentPost').on('submit', function(e) {
+  $('.commentPost').on('submit', function(e) {
     var postId = '&postId=' + this.action.split('/').pop();
     e.preventDefault();
-    if ($('#commentText').val().trim() === '') {
+    var $commentText = $(this).find('.commentText');
+    if ($commentText.val().trim() === '') {
       return;
     }
     socket.emit('commentPost', $(this).serialize() + postId);
-    $('#commentText').val('');
+    $commentText.val('');
   });
   socket.on('commentPost', function(data) {
     $('#postCarousel .carousel-inner .active').removeClass('active');
@@ -201,6 +202,7 @@ $(function() {
     socket.emit('friendSearch', q);
   });
   socket.on('friendSearch', function(users) {
+    console.log(socket.id, users)
     $('.friendSearchItem').remove();
     $('.friendItem').removeClass('d-flex').addClass('d-none');
     var u = null;
@@ -216,7 +218,10 @@ $(function() {
       .insertAfter('#friendSearchItem');
       if (u.image) {
         friendItem.find('img').attr('src', u.image);
+      } else {
+        friendItem.find('img').attr('src', friendItem.find('img').attr('data-src'));
       }
+      friendItem.attr('href', friendItem.attr('data-href'));
       if (u.relation === 'friend' || u.relation === 'admin') {
         if (u.role !== 'admin' && u.relation !== 'admin') {
           friendItem

@@ -8,6 +8,17 @@ const escapeRegExp = (str) => {
 };
 const pug = require('pug');
 const profileWallPost = pug.compileFile('./views/profileWallPost.pug');
+const removeDuplicates = (arr) => {
+  let unique_array = arr.filter(function(elem, index, self) {
+      return index == self.indexOf(elem);
+  });
+  return unique_array
+};
+const duplicatesCleanUp = (user) => {
+  user.friends = removeDuplicates(user.friends);
+  user.friendRequests.sent = removeDuplicates(user.friendRequests.sent);
+  user.friendRequests.received = removeDuplicates(user.friendRequests.received);
+};
 // Store if the user is connected or not in the database
 module.exports.connect = (io, socket, user) => {
   user.updateSocket(socket.id)
@@ -132,6 +143,7 @@ module.exports.connect = (io, socket, user) => {
         { 'info.lastName': query.friendSearch }
       ]
     };
+    let result = [];
     User
     .find(filter)
     .select({
@@ -142,19 +154,24 @@ module.exports.connect = (io, socket, user) => {
       role: 1,
       'profile.image': 1
     })
-    .then((result) => {
+    .then((res) => {
+      result = res;
+      return User.findOne({'_id': user._id});
+    })
+    .then((usr) => {
+      user = usr;
       users = [];
       result.map((person) => {
-        if (!user._id.equals(person._id)) {
+        if (!usr._id.equals(person._id)) {
           let online = typeof io.sockets.connected[person.socket] !== 'undefined';
           let relation = '';
-          if (user.role === 'admin') {
+          if (usr.role === 'admin') {
             relation = 'admin';
-          } else if(user.friends.indexOf(person._id) >= 0) {
+          } else if(usr.friends.indexOf(person._id) >= 0) {
             relation = 'friend';
-          } else if (user.friendRequests.sent.indexOf(person._id) >= 0) {
+          } else if (usr.friendRequests.sent.indexOf(person._id) >= 0) {
             relation = 'requestSent';
-          } else if (user.friendRequests.received.indexOf(person._id) >= 0) {
+          } else if (usr.friendRequests.received.indexOf(person._id) >= 0) {
             relation = 'requestReceived';
           }
           let u = {
@@ -196,13 +213,19 @@ module.exports.connect = (io, socket, user) => {
         subject: 'Demande de connexion reçue | Social Network',
         text: 'Un utilisateur vous a invité a rejoindre son cercle d\'amis. Vous pouvez accepter ou refuser son invitation sur votre profil.'
       });
+      duplicatesCleanUp(person);
       return person.save();
     })
-    .then(() => {
-      if (user.friendRequests.sent.indexOf(user._id) > 1) {
+    .then((res) => {
+      return User.findOne({'_id': user._id});
+    })
+    .then((usr) => {
+      user = usr;
+      if (usr.friendRequests.sent.indexOf(usr._id) > 1) {
         throw new Error('friend request already sent');
       }
-      user.friendRequests.sent.push(friendId);
+      usr.friendRequests.sent.push(friendId);
+      duplicatesCleanUp(usr);
       return user.save();
     })
     .then(() => {
@@ -223,14 +246,20 @@ module.exports.connect = (io, socket, user) => {
         return !user._id.equals(req);
       });
       person.friends.push(user._id);
+      duplicatesCleanUp(person);
       return person.save();
     })
     .then(() => {
-      user.friendRequests.received = user.friendRequests.received.filter((req) => {
+      return User.findOne({'_id': user._id});
+    })
+    .then((usr) => {
+      user = usr;
+      usr.friendRequests.received = usr.friendRequests.received.filter((req) => {
         return !req.equals(friendId);
       });
-      user.friends.push(friendId);
-      return user.save();
+      usr.friends.push(friendId);
+      duplicatesCleanUp(usr);
+      return usr.save();
     })
     .then(() => {
       socket.emit('confirmFriend', friendId);
@@ -249,13 +278,19 @@ module.exports.connect = (io, socket, user) => {
       person.friendRequests.sent = person.friendRequests.sent.filter((req) => {
         return !user._id.equals(req);
       });
+      duplicatesCleanUp(person);
       return person.save();
     })
     .then(() => {
-      user.friendRequests.received = user.friendRequests.received.filter((req) => {
+      return User.findOne({'_id': user._id});
+    })
+    .then((usr) => {
+      user = usr;
+      usr.friendRequests.received = usr.friendRequests.received.filter((req) => {
         return !req.equals(friendId);
       });
-      return user.save();
+      duplicatesCleanUp(usr);
+      return usr.save();
     })
     .then(() => {
       socket.emit('refuseFriend', friendId);
@@ -274,6 +309,7 @@ module.exports.connect = (io, socket, user) => {
       person.friends = person.friends.filter((f) => {
         return !f.equals(userId);
       });
+      duplicatesCleanUp(person);
       return person.save();
     })
     .then(() => {
@@ -282,6 +318,7 @@ module.exports.connect = (io, socket, user) => {
         usr.friends = usr.friends.filter((f) => {
           return !f.equals(friendId);
         });
+        duplicatesCleanUp(usr);
         return usr.save();
       });
     })
@@ -319,6 +356,7 @@ module.exports.connect = (io, socket, user) => {
             subject: 'Recommandation | Social Network',
             text: 'Vous avez reçu une nouvelle recommandation pour votre liste d\'amis.'
           });
+          duplicatesCleanUp(a);
           return a.save();
         } else {
           throw new Error('Already shared or friend');
@@ -334,6 +372,7 @@ module.exports.connect = (io, socket, user) => {
           subject: 'Recommandation | Social Network',
           text: 'Vous avez reçu une nouvelle recommandation pour votre liste d\'amis.'
         });
+        duplicatesCleanUp(b);
         return b.save();
       })
       .then(() => {

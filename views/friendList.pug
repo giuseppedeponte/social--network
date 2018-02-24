@@ -3,7 +3,7 @@ if (isOwner)
     a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.list-group-item-warning.d-flex.justify-content-between.align-items-center
       span
         - var fAvatar = friend.profile.image || 'https://api.adorable.io/avatars/30/' + friend._id
-        img.img-fluid(src=fAvatar width="30" height="30")
+        img.img-fluid(src=fAvatar width="30" height="30" alt="avatar")
         span
           | &emsp;
           small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
@@ -17,7 +17,7 @@ if (isOwner)
     a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-secondary.d-flex.justify-content-between.align-items-center
       span
         - var fAvatar = friend.profile.image || 'https://api.adorable.io/avatars/30/' + friend._id
-        img.img-fluid(src=fAvatar width="30" height="30")
+        img.img-fluid(src=fAvatar width="30" height="30" alt="avatar")
         span
           | &emsp;
           small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }
@@ -29,7 +29,7 @@ each friend in user.friends
   a(href="/user/" + friend._id).friendA.friendItem.list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-center
     span
       - var fAvatar = friend.profile.image || 'https://api.adorable.io/avatars/30/' + friend._id
-      img.img-fluid(src=fAvatar width="30" height="30")
+      img.img-fluid(src=fAvatar width="30" height="30" alt="avatar")
       span
         | &emsp;
         small #{ friend.info.firstName && friend.info.lastName ? '[' + friend.info.firstName + ' ' + friend.info.lastName + ']' : '' }

@@ -7,9 +7,9 @@
     if (isOwner)
       .list-group-item.pt-4
         include ./friendSearch.pug
-      a(href="/user/{{ id }}")#friendSearchItem.friendA.list-group-item.list-group-item-action.d-none.justify-content-between.align-items-center
+      a(href="#" data-href="/user/{{ id }}")#friendSearchItem.friendA.list-group-item.list-group-item-action.d-none.justify-content-between.align-items-center
         span
-          img.img-fluid(src="https://api.adorable.io/avatars/30/{{ id }}" width="30" height="30")
+          img.img-fluid(src="#" data-src="https://api.adorable.io/avatars/30/{{ id }}" width="30" height="30" alt="avatar")
           span
             | &emsp; {{ name }}
         .btn-group
