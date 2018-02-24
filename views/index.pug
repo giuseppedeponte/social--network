@@ -15,7 +15,7 @@ block content
         .alert.alert-success.py-1.mb-4
           strong #{stats.users} utilisateur(s) inscrit(s)
         .alert.alert-success.py-1.mb-4
-          strong #{stats.connections === 0 ? 1 : stats.connections} utilisateur(s) connecté(s)
+          strong #{stats.connections === 0 && user ? 1 : stats.connections} utilisateur(s) connecté(s)
         .alert.alert-success.py-1.mb-4
           strong #{stats.posts} message(s) publié(s)
         .alert.alert-success.py-1.mb-4
@@ -49,7 +49,7 @@ block content
             em &nbsp;Développeur intégrateur Web Javascript Fullstack
             span .
             span Le code source de ce site et des autres sites développés pendante cette formation sont disponibles sur  
-            a(href="http://github.com/giuseppedeponte") GitHub
+            a(target="_blank" href="http://github.com/giuseppedeponte") GitHub
             span .
             .text-center
               img.img-fluid.w-75(src="/images/narwhal.gif" alt="This narwhal loves you" title="Credit: Chibird")
