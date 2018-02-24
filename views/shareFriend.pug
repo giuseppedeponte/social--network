@@ -8,6 +8,8 @@
       .modal-body
         p.alert.alert-info#shareMessage Envoyé!
         #shareFriendWith.list-group
+          if (user.friends.length < 3)
+            .list-group-item.list-group-item-danger Désolé, vous n'avez pas encore assez d'amis...
           each friend in user.friends
             if (friend.role !== 'admin')
               a(data-friend="" href="/share/" + friend._id).list-group-item.list-group-item-action=friend.name || friend.email
