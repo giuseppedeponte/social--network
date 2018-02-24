@@ -8,6 +8,7 @@ block content
           strong= message
       hr
     .col-sm-12
+      h2= title
       form.card.mx-auto(method="POST" enctype="multipart/form-data" action="/user/update/" + user._id)
         //- img.card-img-top.img-fluid(src="https://api.adorable.io/avatars/"+user._id alt="Card image cap")
         ul.list-group.list-group-flush.text-left
@@ -35,9 +36,7 @@ block content
                                accept="image/*"
                                type="file" 
                                name="avatar"
-                               id="avatar"
-                               autocomplete="photo"
-                               placeholder="Image de profile")
+                               id="avatar")
             small.form-text.text-muted Max 500 ko, formats acceptés : .jpg, .jpeg, .png 
           if (user.role === 'admin')
             li.list-group-item
@@ -62,16 +61,17 @@ block content
                                  autocomplete="home email"
                                  placeholder="Adresse email")
           li.list-group-item
-            label.sr-only(for="fullname") FullName
             .input-group.mb-2.mb-sm-0
               .input-group-addon
                 span.fa.fa-fw.fa-address-card
+              label.sr-only(for="firstName") Prénom
               input.form-control.form-control-sm(type="text"
                                  name="firstName" 
                                  id="firstName"
                                  value=user.info.firstName
                                  autocomplete="given-name"
                                  placeholder="Prénom")
+              label.sr-only(for="lastName") Nom de famille
               input.form-control.form-control-sm(type="text"
                                  name="lastName"
                                  id="lastName"
@@ -90,23 +90,25 @@ block content
                                  autocomplete="sex"
                                  placeholder="Genre")
           li.list-group-item
-            label.sr-only(for="address") Adresse
             .input-group.mb-2.mb-sm-0
               .input-group-addon
                 span.fa.fa-fw.fa-map
+              label.sr-only(for="street") Adresse
               input.form-control.form-control-sm(type="text"
                                  name="street" 
                                  id="street"
                                  value=user.info.address.street
-                                 autocomplete="street-address"
+                                 autocomplete="address-level1"
                                  placeholder="Adresse")
             .input-group.mb-2.mb-sm-0
+              label.sr-only(for="zipCode") Code postale
               input.form-control.form-control-sm.mt-1(type="text"
                                  name="zipCode" 
                                  id="zipCode"
                                  value=user.info.address.zipCode
                                  autocomplete="postal-code"
                                  placeholder="Code Postale")
+              label.sr-only(for="city") Commune
               input.form-control.form-control-sm.mt-1(type="text"
                                  name="city" 
                                  id="city"
@@ -114,6 +116,7 @@ block content
                                  autocomplete="address-level2"
                                  placeholder="Commune")
             .input-group.mb-2.mb-sm-0
+              label.sr-only(for="state") Pays
               input.form-control.form-control-sm.mt-1(type="text"
                                  name="state" 
                                  id="state"
