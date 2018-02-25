@@ -79,7 +79,7 @@ $(function() {
   });
   socket.on('incomingCall', function(conversation) {
     if (CONVERSATION) {
-      socket.emit('hangUp', conversation);
+      socket.emit('callRefused', conversation);
       return;
     }
     CONVERSATION = conversation;
@@ -105,7 +105,7 @@ $(function() {
   });
   socket.on('callRefused', function(conversation) {
     CONVERSATION = null;
-    $('#chatAlert').text('La conversation a été refusée.');
+    $('#chatAlert').text('La conversation a été refusée. Essayer à nouveau un peu plus tard...');
     $('#acceptCall').hide();
     $('#refuseCall').hide();
   });

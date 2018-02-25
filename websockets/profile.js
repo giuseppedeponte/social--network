@@ -450,12 +450,13 @@ module.exports.connect = (io, socket, user) => {
   socket.on('callRefused', (call) => {
     User.findOne({'_id': call.caller._id || call.caller })
     .then((u) => {
+      console.log(u);
       if (u.socket) {
         io.to(u.socket).emit('callRefused', call);
       }
     })
     .catch((e) => {
-      socket.emit('hangUp');
+      console.log('callRefused', e);
     });
   });
   socket.on('typing', (conversation) => {

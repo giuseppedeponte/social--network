@@ -220,6 +220,7 @@ router.get('/delete/:userId', auth.owner, (req, res, next) => {
 });
 router.get('/:userId', auth.friend, (req, res, next) => {
   res.io.once('connection', (socket) => {
+    socket.removeAllListeners();
     require('../websockets/profile').connect(res.io, socket, req.user);
   });
   User.findOne({'_id': req.params.userId})
