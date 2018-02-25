@@ -450,7 +450,6 @@ module.exports.connect = (io, socket, user) => {
   socket.on('callRefused', (call) => {
     User.findOne({'_id': call.caller._id || call.caller })
     .then((u) => {
-      console.log(u);
       if (u.socket) {
         io.to(u.socket).emit('callRefused', call);
       }
@@ -482,7 +481,7 @@ module.exports.connect = (io, socket, user) => {
       io.to(data.conversation.callee.socket).emit('incomingMessage', callData(data.conversation));
     })
     .catch((e) => {
-      console.log(e);
+      console.log('incomingMessage', e);
       if (data.conversation.caller) {
         io.to(data.conversation.caller.socket).emit('hangUp');
         io.to(data.conversation.callee.socket).emit('hangUp');
